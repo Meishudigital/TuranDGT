@@ -17,6 +17,8 @@ type WhatsAppStatus = {
   templateLanguage: string;
   phoneNumberId: string;
   webhookConfigured: boolean;
+  missingRequirements: string[];
+  optionalRecommendations: string[];
   recommendedMode: string;
 };
 
@@ -96,6 +98,10 @@ export default function AutomationPanel({ session }: Props) {
   const failedCount = useMemo(() => {
     return items.filter((item) => item.status === "failed").length;
   }, [items]);
+
+  const missingRequirements = status?.missingRequirements || [];
+  const optionalRecommendations = status?.optionalRecommendations || [];
+  const hasMissingRequirements = missingRequirements.length > 0;
 
   return (
     <div className="space-y-5">
@@ -181,31 +187,48 @@ export default function AutomationPanel({ session }: Props) {
             <div>
               <p className="section-kicker">Kurulum Kontrolu</p>
               <h2 className="mt-2 text-[1.3rem] font-semibold tracking-[-0.04em] text-[var(--text-0)]">
-                Gerekenler
+                {hasMissingRequirements ? "Eksik Ayarlar" : "Kurulum Tamam"}
               </h2>
             </div>
 
-            <div className="compact-stat">
-              <p className="compact-stat__label">1</p>
-              <p className="compact-stat__value">WHATSAPP_ACCESS_TOKEN</p>
-            </div>
+            {loading ? (
+              <div className="compact-stat">
+                <p className="compact-stat__label">Durum</p>
+                <p className="compact-stat__value">Kontrol ediliyor</p>
+              </div>
+            ) : hasMissingRequirements ? (
+              <>
+                {missingRequirements.map((item, index) => (
+                  <div className="compact-stat" key={item}>
+                    <p className="compact-stat__label">{index + 1}</p>
+                    <p className="compact-stat__value">{item}</p>
+                  </div>
+                ))}
+              </>
+            ) : (
+              <div className="surface-subcard rounded-[1.2rem] p-4">
+                <p className="field-label mb-2">Durum</p>
+                <p className="text-base font-medium text-[var(--text-0)]">
+                  Tum zorunlu WhatsApp ayarlari hazir.
+                </p>
+                <p className="mt-2 text-sm leading-7 text-[var(--text-2)]">
+                  Kampanya baslatma testine gecebilirsin.
+                </p>
+              </div>
+            )}
 
-            <div className="compact-stat">
-              <p className="compact-stat__label">2</p>
-              <p className="compact-stat__value">WHATSAPP_PHONE_NUMBER_ID</p>
-            </div>
-
-            <div className="compact-stat">
-              <p className="compact-stat__label">3</p>
-              <p className="compact-stat__value">WHATSAPP_WEBHOOK_VERIFY_TOKEN</p>
-            </div>
-
-            <div className="compact-stat">
-              <p className="compact-stat__label">4</p>
-              <p className="compact-stat__value">
-                Ilk temas icin tercihen WHATSAPP_TEMPLATE_NAME
-              </p>
-            </div>
+            {!loading && optionalRecommendations.length > 0 ? (
+              <div className="surface-subcard rounded-[1.2rem] p-4">
+                <p className="field-label mb-2">Onerilen</p>
+                <div className="space-y-2">
+                  {optionalRecommendations.map((item) => (
+                    <p className="text-sm text-[var(--text-1)]" key={item}>
+                      {item}
+                    </p>
+                  ))}
+                </div>
+              </div>
+            ) : null}
           </div>
         </aside>
       </div>

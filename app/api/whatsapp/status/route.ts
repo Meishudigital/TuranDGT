@@ -24,6 +24,24 @@ export async function GET(req: NextRequest) {
   }
 
   const config = getWhatsAppConfig();
+  const missingRequirements: string[] = [];
+  const optionalRecommendations: string[] = [];
+
+  if (!config.accessToken) {
+    missingRequirements.push("WHATSAPP_ACCESS_TOKEN");
+  }
+
+  if (!config.phoneNumberId) {
+    missingRequirements.push("WHATSAPP_PHONE_NUMBER_ID");
+  }
+
+  if (!config.verifyToken) {
+    missingRequirements.push("WHATSAPP_WEBHOOK_VERIFY_TOKEN");
+  }
+
+  if (!config.templateName) {
+    optionalRecommendations.push("WHATSAPP_TEMPLATE_NAME");
+  }
 
   return NextResponse.json({
     ok: true,
@@ -34,6 +52,8 @@ export async function GET(req: NextRequest) {
     templateLanguage: config.templateLanguage,
     phoneNumberId: getMaskedPhoneNumberId(config.phoneNumberId),
     webhookConfigured: Boolean(config.verifyToken),
+    missingRequirements,
+    optionalRecommendations,
     recommendedMode:
       config.mode === "template"
         ? "Ilk temas icin uygun"
