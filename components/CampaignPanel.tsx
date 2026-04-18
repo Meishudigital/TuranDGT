@@ -32,6 +32,13 @@ type Props = {
   session: Session;
 };
 
+type StartConfirmationTarget = {
+  id: number;
+  name: string;
+  pendingCount: number;
+  scopeLabel: string;
+};
+
 function truncateText(value: string, maxLength = 150) {
   if (value.length <= maxLength) {
     return value;
@@ -68,6 +75,9 @@ export default function CampaignPanel({ session }: Props) {
   const [loadingCampaigns, setLoadingCampaigns] = useState(true);
   const [creatingCampaign, setCreatingCampaign] = useState(false);
   const [sendingTestMessage, setSendingTestMessage] = useState(false);
+  const [liveSendUnlocked, setLiveSendUnlocked] = useState(false);
+  const [confirmationTarget, setConfirmationTarget] =
+    useState<StartConfirmationTarget | null>(null);
   const [startingCampaignId, setStartingCampaignId] = useState<number | null>(null);
   const [deletingCampaignId, setDeletingCampaignId] = useState<number | null>(null);
   const [errorText, setErrorText] = useState("");
@@ -251,6 +261,37 @@ export default function CampaignPanel({ session }: Props) {
     }
   };
 
+  const handleOpenStartConfirmation = (campaign: CampaignSummary) => {
+    if (!liveSendUnlocked) {
+      setErrorText(
+        "Canli toplu gonderim kilidi kapali. Once guvenlik kilidini ac."
+      );
+      return;
+    }
+
+    if (campaign.pending_count === 0) {
+      setErrorText("Bu kampanyada gonderilecek bekleyen kayit yok.");
+      return;
+    }
+
+    setErrorText("");
+    setSuccessText("");
+    setConfirmationTarget({
+      id: campaign.id,
+      name: campaign.name,
+      pendingCount: campaign.pending_count,
+      scopeLabel: buildScopeLabel(campaign),
+    });
+  };
+
+  const handleCloseStartConfirmation = () => {
+    if (startingCampaignId !== null) {
+      return;
+    }
+
+    setConfirmationTarget(null);
+  };
+
   const handleStartCampaign = async (campaignId: number) => {
     try {
       setStartingCampaignId(campaignId);
@@ -264,6 +305,12 @@ export default function CampaignPanel({ session }: Props) {
       do {
         const res = await fetchWithSession(session, `/api/campaigns/${campaignId}/start`, {
           method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            confirmLiveSend: true,
+          }),
         });
         const json = await res.json();
 
@@ -289,6 +336,8 @@ export default function CampaignPanel({ session }: Props) {
       } while (remainingCount > 0 && loopCount < 60);
 
       setCampaigns(await fetchCampaigns(session));
+      setConfirmationTarget(null);
+      setLiveSendUnlocked(false);
     } catch (error) {
       setErrorText(error instanceof Error ? error.message : "Kampanya baslatilamadi.");
     } finally {
@@ -499,6 +548,23 @@ export default function CampaignPanel({ session }: Props) {
               <p className="compact-stat__value">Baslat butonu ile WhatsApp batch gonderimini calistir.</p>
             </div>
 
+            <div className="surface-subcard rounded-[1.2rem] p-4">
+              <p className="field-label mb-3">Canli gonderim guvenligi</p>
+              <label className="flex items-start gap-3 text-sm leading-6 text-[var(--text-1)]">
+                <input
+                  type="checkbox"
+                  checked={liveSendUnlocked}
+                  onChange={(event) => setLiveSendUnlocked(event.target.checked)}
+                  className="mt-1 h-4 w-4 rounded border-white/15 bg-black/30 text-[var(--accent)]"
+                />
+                <span>
+                  Gercek ilan sahiplerine toplu WhatsApp mesaji gonderecegimi biliyorum.
+                  Test gonderimi ayri alanda tek numaraya yapilir. Bu kilit kapaliyken
+                  kampanya baslatilamaz.
+                </span>
+              </label>
+            </div>
+
             <Link href="/automation" className="secondary-btn w-full justify-center">
               Otomatik Mesaj Ekranini Ac
             </Link>
@@ -578,14 +644,20 @@ export default function CampaignPanel({ session }: Props) {
                   <td className="table-cell">
                     <div className="flex flex-wrap gap-2">
                       <button
-                        onClick={() => void handleStartCampaign(campaign.id)}
-                        disabled={startingCampaignId === campaign.id || campaign.pending_count === 0}
+                        onClick={() => handleOpenStartConfirmation(campaign)}
+                        disabled={
+                          startingCampaignId === campaign.id ||
+                          campaign.pending_count === 0 ||
+                          !liveSendUnlocked
+                        }
                         className="secondary-btn px-3.5 py-2 text-sm"
                       >
                         {startingCampaignId === campaign.id
                           ? "Baslatiliyor..."
                           : campaign.pending_count > 0
-                            ? "Baslat"
+                            ? liveSendUnlocked
+                              ? "Baslat"
+                              : "Kilit Kapali"
                             : "Tamamlandi"}
                       </button>
 
@@ -620,6 +692,59 @@ export default function CampaignPanel({ session }: Props) {
           </table>
         </div>
       </section>
+
+      {confirmationTarget ? (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4 backdrop-blur-sm">
+          <div className="surface-card w-full max-w-xl rounded-[1.6rem] p-5 shadow-[0_30px_80px_rgba(0,0,0,0.45)]">
+            <p className="section-kicker">Canli Gonderim Onayi</p>
+            <h3 className="mt-2 text-[1.4rem] font-semibold tracking-[-0.04em] text-[var(--text-0)]">
+              Bu kampanya gercek numaralara mesaj gonderecek
+            </h3>
+            <p className="mt-3 text-sm leading-7 text-[var(--text-1)]">
+              Devam edersen bekleyen queue kayitlari WhatsApp Cloud API uzerinden
+              ilan sahiplerine gonderilmeye baslayacak.
+            </p>
+
+            <div className="mt-5 grid gap-3 sm:grid-cols-3">
+              <div className="compact-stat">
+                <p className="compact-stat__label">Kampanya</p>
+                <p className="compact-stat__value">{confirmationTarget.name}</p>
+              </div>
+              <div className="compact-stat">
+                <p className="compact-stat__label">Bekleyen</p>
+                <p className="compact-stat__value">{confirmationTarget.pendingCount}</p>
+              </div>
+              <div className="compact-stat">
+                <p className="compact-stat__label">Kapsam</p>
+                <p className="compact-stat__value">{confirmationTarget.scopeLabel}</p>
+              </div>
+            </div>
+
+            <div className="surface-subcard mt-4 rounded-[1.2rem] p-4">
+              <p className="field-label mb-2">Son kontrol</p>
+              <p className="text-sm leading-7 text-[var(--text-1)]">
+                Eger sadece deneme yapmak istiyorsan bu pencereyi kapat ve sol taraftaki
+                test gonderimi alanini kullan. Bu buton toplu canli gonderim icindir.
+              </p>
+            </div>
+
+            <div className="mt-5 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+              <button onClick={handleCloseStartConfirmation} className="ghost-btn sm:min-w-[140px]">
+                Vazgec
+              </button>
+              <button
+                onClick={() => void handleStartCampaign(confirmationTarget.id)}
+                disabled={startingCampaignId === confirmationTarget.id}
+                className="primary-btn sm:min-w-[210px]"
+              >
+                {startingCampaignId === confirmationTarget.id
+                  ? "Gonderim Baslatiliyor..."
+                  : "Evet, Canli Gonderimi Baslat"}
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }

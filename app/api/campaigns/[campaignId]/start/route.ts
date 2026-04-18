@@ -62,6 +62,21 @@ export async function POST(
       );
     }
 
+    const body = (await req.json().catch(() => ({}))) as {
+      confirmLiveSend?: boolean;
+    };
+
+    if (body.confirmLiveSend !== true) {
+      return NextResponse.json(
+        {
+          ok: false,
+          error:
+            "Canli gonderim onayi olmadan kampanya baslatilamaz. Once ekrandaki onay adimini tamamla.",
+        },
+        { status: 400 }
+      );
+    }
+
     const { campaignId } = await params;
     const numericCampaignId = Number(campaignId);
 
