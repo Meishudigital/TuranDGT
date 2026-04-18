@@ -64,8 +64,10 @@ export default function CampaignPanel({ session }: Props) {
   const [campaigns, setCampaigns] = useState<CampaignSummary[]>([]);
   const [campaignName, setCampaignName] = useState("");
   const [messageTemplate, setMessageTemplate] = useState("");
+  const [testPhoneNumber, setTestPhoneNumber] = useState("");
   const [loadingCampaigns, setLoadingCampaigns] = useState(true);
   const [creatingCampaign, setCreatingCampaign] = useState(false);
+  const [sendingTestMessage, setSendingTestMessage] = useState(false);
   const [startingCampaignId, setStartingCampaignId] = useState<number | null>(null);
   const [deletingCampaignId, setDeletingCampaignId] = useState<number | null>(null);
   const [errorText, setErrorText] = useState("");
@@ -79,6 +81,7 @@ export default function CampaignPanel({ session }: Props) {
     if (composerState) {
       setCampaignName(composerState.campaignName);
       setMessageTemplate(composerState.messageTemplate);
+      setTestPhoneNumber(composerState.testPhoneNumber);
     }
   }, [userId]);
 
@@ -86,8 +89,9 @@ export default function CampaignPanel({ session }: Props) {
     writeCampaignComposerState(userId, {
       campaignName,
       messageTemplate,
+      testPhoneNumber,
     });
-  }, [campaignName, messageTemplate, userId]);
+  }, [campaignName, messageTemplate, testPhoneNumber, userId]);
 
   useEffect(() => {
     let active = true;
@@ -197,6 +201,53 @@ export default function CampaignPanel({ session }: Props) {
       );
     } finally {
       setCreatingCampaign(false);
+    }
+  };
+
+  const handleSendTestMessage = async () => {
+    if (!testPhoneNumber.trim()) {
+      setErrorText("Test gonderimi icin once bir telefon numarasi gir.");
+      return;
+    }
+
+    if (!messageTemplate.trim()) {
+      setErrorText("Test gonderimi icin mesaj metni zorunludur.");
+      return;
+    }
+
+    try {
+      setSendingTestMessage(true);
+      setErrorText("");
+      setSuccessText("");
+
+      const res = await fetchWithSession(session, "/api/whatsapp/test-send", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          phoneNumber: testPhoneNumber,
+          messageText: messageTemplate,
+        }),
+      });
+
+      const json = await res.json();
+
+      if (!res.ok || !json.ok) {
+        setErrorText(json.error || "Test mesaji gonderilemedi.");
+        return;
+      }
+
+      setTestPhoneNumber(json.phoneNumber || testPhoneNumber);
+      setSuccessText(
+        `${json.phoneNumber} numarasina test mesaji ${json.mode === "template" ? "template" : "text"} modunda gonderildi.`
+      );
+    } catch (error) {
+      setErrorText(
+        error instanceof Error ? error.message : "Test mesaji gonderilemedi."
+      );
+    } finally {
+      setSendingTestMessage(false);
     }
   };
 
@@ -375,6 +426,36 @@ export default function CampaignPanel({ session }: Props) {
                       rows={8}
                       className="field-input min-h-[12rem] resize-none"
                     />
+                  </div>
+
+                  <div className="surface-subcard rounded-[1.1rem] p-3.5">
+                    <p className="field-label mb-3">Hizli test gonderimi</p>
+
+                    <div className="space-y-3">
+                      <div>
+                        <label className="field-label">Test numarasi</label>
+                        <input
+                          value={testPhoneNumber}
+                          onChange={(event) => setTestPhoneNumber(event.target.value)}
+                          placeholder="+905xxxxxxxxx"
+                          className="field-input"
+                        />
+                        <p className="mt-2 text-xs leading-6 text-[var(--text-2)]">
+                          Bu alan sadece kendi test numarana manuel deneme yapmak icin.
+                          En guvenlisi numarayi +90 formatinda yazman.
+                        </p>
+                      </div>
+
+                      <button
+                        onClick={() => void handleSendTestMessage()}
+                        disabled={sendingTestMessage || !messageTemplate.trim()}
+                        className="secondary-btn w-full justify-center"
+                      >
+                        {sendingTestMessage
+                          ? "Test Mesaji Gonderiliyor..."
+                          : "Bu Numaraya Test Mesaji Gonder"}
+                      </button>
+                    </div>
                   </div>
 
                   <button

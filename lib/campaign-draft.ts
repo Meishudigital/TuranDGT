@@ -23,6 +23,7 @@ export type CampaignDraft = {
 type CampaignComposerState = {
   campaignName: string;
   messageTemplate: string;
+  testPhoneNumber: string;
 };
 
 function getDraftStorageKey(userId: string) {
@@ -119,6 +120,10 @@ export function readCampaignComposerState(userId: string): CampaignComposerState
       messageTemplate:
         typeof parsedValue.messageTemplate === "string"
           ? parsedValue.messageTemplate
+          : "",
+      testPhoneNumber:
+        typeof parsedValue.testPhoneNumber === "string"
+          ? parsedValue.testPhoneNumber
           : "",
     };
   } catch (error) {
