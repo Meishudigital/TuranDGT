@@ -48,7 +48,7 @@ export default function DashboardPageShell({
   if (isLoading || !session || !profile?.onboarding_completed || regions.length === 0) {
     return (
       <main className="flex min-h-screen items-center justify-center px-6 text-white">
-        <div className="surface-card rounded-[1.4rem] px-6 py-5 text-sm text-[var(--text-1)]">
+        <div className="surface-card rounded-[1.2rem] px-5 py-4 text-sm text-[var(--text-2)]">
           {loadingMessage || "Calisma alani hazirlaniyor..."}
         </div>
       </main>

@@ -156,15 +156,15 @@ export default function ProfileForm({ mode }: Props) {
           <h2 className="mt-2 text-[1.65rem] font-semibold tracking-[-0.04em] text-[var(--text-0)]">
             {mode === "onboarding" ? "Profil bilgilerini tamamla" : "Profili duzenle"}
           </h2>
-          <p className="mt-2 max-w-2xl text-sm leading-7 text-[var(--text-1)]">
+          <p className="mt-2 max-w-2xl text-sm leading-6 text-[var(--text-2)]">
             {mode === "onboarding"
-              ? "Panele gecmek icin isim, soy isim ve en az 1 il secimi zorunludur."
-              : "Kimlik ve bolge bilgilerini istedigin zaman buradan guncelleyebilirsin."}
+              ? "Panele gecmek icin temel alanlari tamamla."
+              : "Hesap ve bolge ayarlarini guncelle."}
           </p>
         </div>
 
         <div className="metric-chip">
-          Secili il sayisi: <strong className="text-[var(--text-0)]">{selectedCities.length}</strong>
+          Il sayisi <strong className="text-[var(--text-0)]">{selectedCities.length}</strong>
         </div>
       </div>
 
@@ -202,14 +202,14 @@ export default function ProfileForm({ mode }: Props) {
 
           <div className="mt-6 grid gap-3 sm:grid-cols-2">
             <div className="profile-metric">
-              <p className="profile-metric__label">Profil durumu</p>
+              <p className="profile-metric__label">Durum</p>
               <p className="profile-metric__value">
                 {mode === "onboarding" ? "Kurulum bekliyor" : "Aktif"}
               </p>
             </div>
 
             <div className="profile-metric">
-              <p className="profile-metric__label">Maksimum alan</p>
+              <p className="profile-metric__label">Kapasite</p>
               <p className="profile-metric__value">81 il</p>
             </div>
           </div>
@@ -250,7 +250,7 @@ export default function ProfileForm({ mode }: Props) {
               <p className="field-label mb-0">Secili iller</p>
               <span className="text-sm text-[var(--text-2)]">
                 {selectedCities.length === 0
-                  ? "Henuz secim yok"
+                  ? "Secim yok"
                   : `${selectedCities.length} il aktif`}
               </span>
             </div>

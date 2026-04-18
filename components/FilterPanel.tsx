@@ -399,7 +399,7 @@ export default function FilterPanel({ session, allowedCities }: Props) {
       }
 
       setItems(json.items || []);
-      setSuccessText(`${(json.items || []).length} ilan listeye alindi.`);
+      setSuccessText(`${(json.items || []).length} ilan bulundu.`);
     } catch (error) {
       setErrorText(error instanceof Error ? error.message : "Kayitlar alinamadi.");
       setItems([]);
@@ -481,36 +481,46 @@ export default function FilterPanel({ session, allowedCities }: Props) {
           <section className="surface-card page-rise page-rise-3 rounded-[1.65rem] p-4 md:p-5">
             <div className="flex flex-col gap-4">
               <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-                <div className="max-w-2xl">
-                  <p className="section-kicker">Ilan Tarama</p>
+                <div className="max-w-xl">
+                  <p className="section-kicker">Arama</p>
                   <h2 className="mt-2 text-[1.5rem] font-semibold tracking-[-0.04em] text-[var(--text-0)]">
-                    Yetkili bolgelerde hizli arama yap
+                    Bolge icinde ilan ara
                   </h2>
-                  <p className="mt-2 text-sm leading-7 text-[var(--text-1)]">
-                    Il, ilce ve mahalle secimi ile hedef bolgeyi daralt. Secilen
-                    ilanlari dogrudan kampanya ekranina tasiyabilirsin.
+                  <p className="mt-2 text-sm leading-6 text-[var(--text-2)]">
+                    Filtrele, listele ve secimi kampanyaya tası.
                   </p>
                 </div>
 
                 <div className="grid gap-2 sm:grid-cols-3 lg:min-w-[29rem]">
                   <div className="compact-stat">
-                    <p className="compact-stat__label">Aktif kapsam</p>
+                    <p className="compact-stat__label">Kapsam</p>
                     <p className="compact-stat__value">{activeScope}</p>
                   </div>
 
                   <div className="compact-stat">
-                    <p className="compact-stat__label">Bulunan ilan</p>
+                    <p className="compact-stat__label">Sonuc</p>
                     <p className="compact-stat__value">{items.length}</p>
                   </div>
 
                   <div className="compact-stat">
-                    <p className="compact-stat__label">Secilen ilan</p>
+                    <p className="compact-stat__label">Secim</p>
                     <p className="compact-stat__value">{selectedIds.length}</p>
                   </div>
                 </div>
               </div>
 
               <div className="surface-subcard rounded-[1.35rem] p-4">
+                <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+                  <div>
+                    <p className="field-label mb-1">Filtreler</p>
+                    <p className="text-sm text-[var(--text-3)]">Yetkili alanlar icinde arama yap.</p>
+                  </div>
+
+                  <span className="metric-chip">
+                    Yetkili il <strong className="text-[var(--text-0)]">{allowedCities.length}</strong>
+                  </span>
+                </div>
+
                 <div className="grid gap-3 xl:grid-cols-[minmax(0,0.95fr)_minmax(0,0.95fr)_minmax(0,0.95fr)_140px_120px]">
                   <div>
                     <label className="field-label">Il</label>
@@ -582,7 +592,7 @@ export default function FilterPanel({ session, allowedCities }: Props) {
                       disabled={searching || loadingCities}
                       className="primary-btn w-full"
                     >
-                      {searching ? "Taran..." : "Tara"}
+                      {searching ? "Araniyor..." : "Ara"}
                     </button>
                   </div>
 
@@ -598,20 +608,11 @@ export default function FilterPanel({ session, allowedCities }: Props) {
                 </div>
 
                 <div className="soft-divider mt-4 pt-4">
-                  <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-                    <div>
-                      <p className="field-label mb-1">Hizli il secimi</p>
-                      <p className="text-sm text-[var(--text-2)]">
-                        Hesabinda tanimli illerden tek tikla arama baslat.
-                      </p>
-                    </div>
-
-                    <span className="metric-chip">
-                      Yetkili il: <strong className="text-[var(--text-0)]">{allowedCities.length}</strong>
-                    </span>
+                  <div className="mb-3">
+                    <p className="field-label mb-1">Hizli secim</p>
                   </div>
 
-                  <div className="mt-3 flex flex-wrap gap-2">
+                  <div className="flex flex-wrap gap-2">
                     <button
                       onClick={() => handleCitySelect("")}
                       className={`city-chip city-chip--button ${
@@ -655,24 +656,23 @@ export default function FilterPanel({ session, allowedCities }: Props) {
         <aside className="surface-card page-rise page-rise-4 rounded-[1.65rem] p-4 xl:sticky xl:top-5">
           <div className="flex flex-col gap-4">
             <div>
-              <p className="section-kicker">Secim Sepeti</p>
+              <p className="section-kicker">Secim</p>
               <h2 className="mt-2 text-[1.35rem] font-semibold tracking-[-0.04em] text-[var(--text-0)]">
-                Kampanya hazirligi
+                Kampanya sepati
               </h2>
-              <p className="mt-2 text-sm leading-7 text-[var(--text-1)]">
-                Bu ekranda sadece ilanlari secersin. Secimi tamamlayinca kampanya
-                sayfasina gecer ve mesaj sablonunu orada kurarsin.
+              <p className="mt-2 text-sm leading-6 text-[var(--text-2)]">
+                Secilen ilanlar kampanya ekranina tasinir.
               </p>
             </div>
 
             <div className="grid gap-2">
               <div className="compact-stat">
-                <p className="compact-stat__label">Hazir kapsam</p>
+                <p className="compact-stat__label">Kapsam</p>
                 <p className="compact-stat__value">{activeScope}</p>
               </div>
 
               <div className="compact-stat">
-                <p className="compact-stat__label">Secilen ilan</p>
+                <p className="compact-stat__label">Secilen</p>
                 <p className="compact-stat__value">{selectedIds.length}</p>
               </div>
 
@@ -685,11 +685,11 @@ export default function FilterPanel({ session, allowedCities }: Props) {
             </div>
 
             <div className="surface-subcard rounded-[1.25rem] p-4">
-              <p className="field-label mb-2">Secim ozeti</p>
-              <p className="text-sm leading-7 text-[var(--text-1)]">
+              <p className="field-label mb-2">Ozet</p>
+              <p className="text-sm leading-6 text-[var(--text-2)]">
                 {selectedIds.length > 0
-                  ? `${selectedIds.length} ilan secildi. Devam ettiginde bu kayitlar kampanya olusturma ekranina tasinacak.`
-                  : "Secilen ilanlar burada kampanya hazirligi icin tutulur."}
+                  ? `${selectedIds.length} ilan kampanya icin hazir.`
+                  : "Henuz secim yok."}
               </p>
 
               <div className="mt-4 flex flex-col gap-3">

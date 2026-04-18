@@ -7,7 +7,7 @@ export default function ProfilePage() {
   return (
     <DashboardPageShell
       title="Profil Ayarlari"
-      description="Kimlik ve bolge bilgilerini guncelle, hesabin icin yetkili il listesini yonet."
+      description="Hesap ve bolge ayarlarini guncelle."
       loadingMessage="Profil ekrani hazirlaniyor..."
     >
       {() => (

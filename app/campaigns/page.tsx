@@ -7,7 +7,7 @@ export default function CampaignsPage() {
   return (
     <DashboardPageShell
       title="Kampanya Olustur"
-      description="Ilan secimlerini kampanyaya donustur, mevcut kampanyalari goruntule ve sil."
+      description="Taslaklari kampanyaya cevir, testi gonder, canliya al."
       loadingMessage="Kampanya ekrani hazirlaniyor..."
     >
       {({ session }) => <CampaignPanel session={session} />}

@@ -87,28 +87,28 @@ export default function QueueTable({ items }: Props) {
   return (
     <div className="table-shell">
       <div className="table-top">
-        <div className="max-w-3xl">
-          <p className="section-kicker">Queue Kayitlari</p>
+        <div className="max-w-2xl">
+          <p className="section-kicker">Queue</p>
           <h2 className="mt-2 text-[1.45rem] font-semibold tracking-[-0.04em] text-[var(--text-0)]">
-            Mesaj kuyrugu gorunumu
+            Gonderim kayitlari
           </h2>
-          <p className="mt-2 text-sm leading-7 text-[var(--text-1)]">
-            Bekleyen, gonderilen ve hata alan kayitlari kampanya bazinda izle.
+          <p className="mt-2 text-sm leading-6 text-[var(--text-2)]">
+            Bekleyen, giden ve hatali kayitlar.
           </p>
         </div>
 
         <div className="flex flex-wrap gap-2">
           <span className="metric-chip">
-            Toplam: <strong className="text-[var(--text-0)]">{items.length}</strong>
+            Toplam <strong className="text-[var(--text-0)]">{items.length}</strong>
           </span>
           <span className="metric-chip">
-            Bekliyor: <strong className="text-[var(--text-0)]">{summary.pending}</strong>
+            Bekleyen <strong className="text-[var(--text-0)]">{summary.pending}</strong>
           </span>
           <span className="metric-chip">
-            Gonderildi: <strong className="text-[var(--text-0)]">{summary.sent}</strong>
+            Gonderildi <strong className="text-[var(--text-0)]">{summary.sent}</strong>
           </span>
           <span className="metric-chip">
-            Hata: <strong className="text-[var(--text-0)]">{summary.failed}</strong>
+            Hata <strong className="text-[var(--text-0)]">{summary.failed}</strong>
           </span>
         </div>
       </div>
@@ -118,11 +118,11 @@ export default function QueueTable({ items }: Props) {
           <thead className="bg-black/20 text-left">
             <tr>
               <th className="table-head-cell min-w-[96px]">Queue</th>
-              <th className="table-head-cell min-w-[220px]">Kampanya / Kisi</th>
+              <th className="table-head-cell min-w-[220px]">Kampanya</th>
               <th className="table-head-cell min-w-[320px]">Mesaj</th>
               <th className="table-head-cell min-w-[150px]">Durum</th>
               <th className="table-head-cell min-w-[180px]">Zaman</th>
-              <th className="table-head-cell min-w-[220px]">Hata</th>
+              <th className="table-head-cell min-w-[220px]">Not</th>
             </tr>
           </thead>
 
@@ -147,7 +147,7 @@ export default function QueueTable({ items }: Props) {
                   <td className="table-cell">
                     <div className="space-y-1">
                       <p className="table-cell--strong">{campaignLabel}</p>
-                      <p className="text-sm text-[var(--text-1)]">
+                      <p className="text-sm text-[var(--text-2)]">
                         {item.owner_name || "-"}
                       </p>
                       <p className="table-cell--muted text-sm">
@@ -174,7 +174,7 @@ export default function QueueTable({ items }: Props) {
                     </p>
                     {item.provider_status ? (
                       <p className="table-cell--muted mt-1 text-xs uppercase tracking-[0.12em]">
-                        Provider: {item.provider_status}
+                        {item.provider_status}
                       </p>
                     ) : null}
                   </td>

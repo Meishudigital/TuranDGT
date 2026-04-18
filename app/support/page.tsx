@@ -7,7 +7,7 @@ export default function SupportPage() {
   return (
     <DashboardPageShell
       title="Bize Ulasin"
-      description="Kullanim destegi, hata bildirimi ve yeni ozellik onerileri icin yardim merkezi."
+      description="Destek, hata bildirimi ve ozellik talepleri."
       loadingMessage="Destek ekrani hazirlaniyor..."
     >
       {() => <SupportPanel />}

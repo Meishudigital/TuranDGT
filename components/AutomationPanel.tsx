@@ -110,20 +110,19 @@ export default function AutomationPanel({ session }: Props) {
       <div className="grid gap-5 xl:grid-cols-[minmax(0,1.1fr)_340px]">
         <section className="surface-card rounded-[1.65rem] p-4 md:p-5">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-            <div className="max-w-3xl">
+            <div className="max-w-xl">
               <p className="section-kicker">WhatsApp Cloud API</p>
               <h2 className="mt-2 text-[1.55rem] font-semibold tracking-[-0.04em] text-[var(--text-0)]">
-                Gercek mesaj otomasyonu durumu
+                Gonderim durumu
               </h2>
-              <p className="mt-2 text-sm leading-7 text-[var(--text-1)]">
-                Kampanyalar bu moduldaki entegrasyon ayarlari ile batch batch
-                gonderilir. Baslat dediginde queue kayitlari WhatsApp API tarafina aktarilir.
+              <p className="mt-2 text-sm leading-6 text-[var(--text-2)]">
+                Kurulum ve queue akisini tek ekranda takip et.
               </p>
             </div>
 
             <div className="grid gap-2 sm:grid-cols-3 lg:min-w-[29rem]">
               <div className="compact-stat">
-                <p className="compact-stat__label">Baglanti</p>
+                <p className="compact-stat__label">Durum</p>
                 <p className="compact-stat__value">
                   {status?.configured ? "Hazir" : loading ? "Kontrol" : "Eksik"}
                 </p>
@@ -143,7 +142,7 @@ export default function AutomationPanel({ session }: Props) {
 
           <div className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
             <div className="compact-stat">
-              <p className="compact-stat__label">Gonderim modu</p>
+              <p className="compact-stat__label">Mod</p>
               <p className="compact-stat__value">
                 {status?.mode === "template" ? "Template" : "Text"}
               </p>
@@ -170,14 +169,9 @@ export default function AutomationPanel({ session }: Props) {
           </div>
 
           <div className="surface-subcard mt-5 rounded-[1.35rem] p-4">
-            <p className="field-label mb-2">Onemli not</p>
-            <p className="text-sm leading-7 text-[var(--text-1)]">
-              Template modu ayarliysa ilk temas mesajlari onayli WhatsApp template
-              uzerinden gonderilir. Text modu ise genelde sadece acik 24 saatlik
-              sohbet pencerelerinde guvenlidir.
-            </p>
-            <p className="mt-3 text-sm leading-7 text-[var(--text-2)]">
-              Sistem yorumu: {status?.recommendedMode || (loading ? "Yukleniyor..." : "-")}
+            <p className="field-label mb-2">Yorum</p>
+            <p className="text-sm leading-6 text-[var(--text-2)]">
+              {status?.recommendedMode || (loading ? "Yukleniyor..." : "-")}
             </p>
           </div>
         </section>
@@ -209,10 +203,10 @@ export default function AutomationPanel({ session }: Props) {
               <div className="surface-subcard rounded-[1.2rem] p-4">
                 <p className="field-label mb-2">Durum</p>
                 <p className="text-base font-medium text-[var(--text-0)]">
-                  Tum zorunlu WhatsApp ayarlari hazir.
+                  Zorunlu ayarlar hazir.
                 </p>
-                <p className="mt-2 text-sm leading-7 text-[var(--text-2)]">
-                  Kampanya baslatma testine gecebilirsin.
+                <p className="mt-2 text-sm leading-6 text-[var(--text-2)]">
+                  Gonderim testine hazir.
                 </p>
               </div>
             )}

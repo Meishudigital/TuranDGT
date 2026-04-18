@@ -203,8 +203,9 @@ export default function CampaignPanel({ session }: Props) {
       setDraft(null);
       setCampaignName("");
       setMessageTemplate("");
+      setTestPhoneNumber("");
       setCampaigns(await fetchCampaigns(session));
-      setSuccessText(`${json.queuedCount} ilan icin kampanya olusturuldu.`);
+      setSuccessText(`${json.queuedCount} kayitla kampanya olusturuldu.`);
     } catch (error) {
       setErrorText(
         error instanceof Error ? error.message : "Kampanya olusturulamadi."
@@ -379,30 +380,29 @@ export default function CampaignPanel({ session }: Props) {
         <section className="surface-card rounded-[1.65rem] p-4 md:p-5">
           <div className="flex flex-col gap-4">
             <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-              <div className="max-w-2xl">
-                <p className="section-kicker">Kampanya Calisma Alani</p>
+              <div className="max-w-xl">
+                <p className="section-kicker">Kampanya</p>
                 <h2 className="mt-2 text-[1.5rem] font-semibold tracking-[-0.04em] text-[var(--text-0)]">
-                  Secimden kampanyaya gecis
+                  Taslaktan gonderime gec
                 </h2>
-                <p className="mt-2 text-sm leading-7 text-[var(--text-1)]">
-                  Ilan Bulma ekranindan gelen secimleri burada kampanyaya donustur.
-                  Olusan kampanyalar yalnizca bu hesaba ozel gorunur, baslatilir ve silinebilir.
+                <p className="mt-2 text-sm leading-6 text-[var(--text-2)]">
+                  Secimi kampanyaya cevir, testi gonder, sonra canliya al.
                 </p>
               </div>
 
               <div className="grid gap-2 sm:grid-cols-3 lg:min-w-[29rem]">
                 <div className="compact-stat">
-                  <p className="compact-stat__label">Hazir secim</p>
+                  <p className="compact-stat__label">Taslak</p>
                   <p className="compact-stat__value">{stagedCount}</p>
                 </div>
 
                 <div className="compact-stat">
-                  <p className="compact-stat__label">Toplam kampanya</p>
+                  <p className="compact-stat__label">Kampanya</p>
                   <p className="compact-stat__value">{campaigns.length}</p>
                 </div>
 
                 <div className="compact-stat">
-                  <p className="compact-stat__label">Queue kaydi</p>
+                  <p className="compact-stat__label">Queue</p>
                   <p className="compact-stat__value">{totalQueuedCount}</p>
                 </div>
               </div>
@@ -413,8 +413,8 @@ export default function CampaignPanel({ session }: Props) {
                 <div className="flex items-center justify-between gap-3">
                   <div>
                     <p className="field-label mb-1">Hazir secim</p>
-                    <p className="text-sm text-[var(--text-2)]">
-                      Aktif kapsam: {stagedScope}
+                    <p className="text-sm text-[var(--text-3)]">
+                      {stagedScope}
                     </p>
                   </div>
 
@@ -443,13 +443,13 @@ export default function CampaignPanel({ session }: Props) {
 
                     {draft.items.length > 6 && (
                       <div className="rounded-[1rem] border border-dashed border-white/10 px-3.5 py-3 text-sm text-[var(--text-2)]">
-                        +{draft.items.length - 6} ilan daha kampanya taslaginda tutuluyor.
+                        +{draft.items.length - 6} kayit daha
                       </div>
                     )}
                   </div>
                 ) : (
                   <div className="empty-state mt-4 rounded-[1rem] border border-dashed border-white/10 bg-black/20">
-                    Kampanya taslagi bos. Once ilan secmek icin ilan bulma ekranina gec.
+                    Hazir secim yok.
                   </div>
                 )}
               </div>
@@ -471,14 +471,14 @@ export default function CampaignPanel({ session }: Props) {
                     <textarea
                       value={messageTemplate}
                       onChange={(event) => setMessageTemplate(event.target.value)}
-                      placeholder="Merhaba, ilandaki gayrimenkulunuz icin size ulasmak istedim..."
-                      rows={8}
-                      className="field-input min-h-[12rem] resize-none"
+                      placeholder="Gonderilecek mesaj"
+                      rows={7}
+                      className="field-input min-h-[10rem] resize-none"
                     />
                   </div>
 
                   <div className="surface-subcard rounded-[1.1rem] p-3.5">
-                    <p className="field-label mb-3">Hizli test gonderimi</p>
+                    <p className="field-label mb-3">Test gonderimi</p>
 
                     <div className="space-y-3">
                       <div>
@@ -489,9 +489,8 @@ export default function CampaignPanel({ session }: Props) {
                           placeholder="+905xxxxxxxxx"
                           className="field-input"
                         />
-                        <p className="mt-2 text-xs leading-6 text-[var(--text-2)]">
-                          Bu alan sadece kendi test numarana manuel deneme yapmak icin.
-                          En guvenlisi numarayi +90 formatinda yazman.
+                        <p className="mt-2 text-xs leading-5 text-[var(--text-3)]">
+                          Sadece kendi test numaran icin kullan.
                         </p>
                       </div>
 
@@ -527,29 +526,29 @@ export default function CampaignPanel({ session }: Props) {
         <aside className="surface-card rounded-[1.65rem] p-4">
           <div className="flex h-full flex-col gap-4">
             <div>
-              <p className="section-kicker">Kisa Notlar</p>
+              <p className="section-kicker">Kontrol</p>
               <h2 className="mt-2 text-[1.3rem] font-semibold tracking-[-0.04em] text-[var(--text-0)]">
-                Otomasyon mantigi
+                Gonderim akisi
               </h2>
             </div>
 
             <div className="compact-stat">
-              <p className="compact-stat__label">1. Adim</p>
-              <p className="compact-stat__value">Ilan Bulma ekraninda ilan sec.</p>
+              <p className="compact-stat__label">1</p>
+              <p className="compact-stat__value">Secim al</p>
             </div>
 
             <div className="compact-stat">
-              <p className="compact-stat__label">2. Adim</p>
-              <p className="compact-stat__value">Kampanyayi olustur ve queue satirlarini hazirla.</p>
+              <p className="compact-stat__label">2</p>
+              <p className="compact-stat__value">Test gonder</p>
             </div>
 
             <div className="compact-stat">
-              <p className="compact-stat__label">3. Adim</p>
-              <p className="compact-stat__value">Baslat butonu ile WhatsApp batch gonderimini calistir.</p>
+              <p className="compact-stat__label">3</p>
+              <p className="compact-stat__value">Canliya al</p>
             </div>
 
             <div className="surface-subcard rounded-[1.2rem] p-4">
-              <p className="field-label mb-3">Canli gonderim guvenligi</p>
+              <p className="field-label mb-3">Canli gonderim kilidi</p>
               <label className="flex items-start gap-3 text-sm leading-6 text-[var(--text-1)]">
                 <input
                   type="checkbox"
@@ -558,9 +557,7 @@ export default function CampaignPanel({ session }: Props) {
                   className="mt-1 h-4 w-4 rounded border-white/15 bg-black/30 text-[var(--accent)]"
                 />
                 <span>
-                  Gercek ilan sahiplerine toplu WhatsApp mesaji gonderecegimi biliyorum.
-                  Test gonderimi ayri alanda tek numaraya yapilir. Bu kilit kapaliyken
-                  kampanya baslatilamaz.
+                  Kilit acilmadan toplu gonderim baslamaz.
                 </span>
               </label>
             </div>
@@ -574,22 +571,22 @@ export default function CampaignPanel({ session }: Props) {
 
       <section className="table-shell">
         <div className="table-top">
-          <div className="max-w-3xl">
-            <p className="section-kicker">Hesabina Ozel Kampanyalar</p>
+          <div className="max-w-2xl">
+            <p className="section-kicker">Kampanyalar</p>
             <h2 className="mt-2 text-[1.45rem] font-semibold tracking-[-0.04em] text-[var(--text-0)]">
-              Olusturulan kampanya listesi
+              Hesabina ait liste
             </h2>
-            <p className="mt-2 text-sm leading-7 text-[var(--text-1)]">
-              Bu tablo yalnizca oturumdaki kullanicinin kampanyalarini gosterir.
+            <p className="mt-2 text-sm leading-6 text-[var(--text-2)]">
+              Baslat, izle veya sil.
             </p>
           </div>
 
           <div className="flex flex-wrap gap-2">
             <span className="metric-chip">
-              Kampanya: <strong className="text-[var(--text-0)]">{campaigns.length}</strong>
+              Kampanya <strong className="text-[var(--text-0)]">{campaigns.length}</strong>
             </span>
             <span className="metric-chip">
-              Queue: <strong className="text-[var(--text-0)]">{totalQueuedCount}</strong>
+              Queue <strong className="text-[var(--text-0)]">{totalQueuedCount}</strong>
             </span>
           </div>
         </div>
@@ -598,11 +595,11 @@ export default function CampaignPanel({ session }: Props) {
           <table className="min-w-full text-sm">
             <thead className="bg-black/20 text-left">
               <tr>
-                <th className="table-head-cell min-w-[120px]">Kampanya</th>
-                <th className="table-head-cell min-w-[220px]">Kapsam</th>
-                <th className="table-head-cell min-w-[320px]">Mesaj</th>
-                <th className="table-head-cell min-w-[220px]">Durum</th>
-                <th className="table-head-cell min-w-[190px]">Aksiyon</th>
+              <th className="table-head-cell min-w-[120px]">Kampanya</th>
+              <th className="table-head-cell min-w-[220px]">Kapsam</th>
+              <th className="table-head-cell min-w-[320px]">Mesaj</th>
+              <th className="table-head-cell min-w-[220px]">Durum</th>
+              <th className="table-head-cell min-w-[190px]">Islem</th>
               </tr>
             </thead>
 
@@ -610,11 +607,11 @@ export default function CampaignPanel({ session }: Props) {
               {campaigns.map((campaign) => (
                 <tr key={campaign.id} className="table-row">
                   <td className="table-cell">
-                    <div className="space-y-1.5">
-                      <p className="table-cell--strong">{campaign.name}</p>
-                      <p className="table-cell--muted text-sm">Kampanya #{campaign.id}</p>
-                    </div>
-                  </td>
+                      <div className="space-y-1.5">
+                        <p className="table-cell--strong">{campaign.name}</p>
+                        <p className="table-cell--muted text-sm">#{campaign.id}</p>
+                      </div>
+                    </td>
 
                   <td className="table-cell">
                     <p className="table-cell--strong">{buildScopeLabel(campaign)}</p>
@@ -630,10 +627,10 @@ export default function CampaignPanel({ session }: Props) {
                     <div className="flex flex-wrap gap-2">
                       <span className="table-meta-pill">Toplam {campaign.total_count}</span>
                       <span className="status-pill status-pill--pending">
-                        Bekliyor {campaign.pending_count}
+                        Bekleyen {campaign.pending_count}
                       </span>
                       <span className="status-pill status-pill--sent">
-                        Gonderildi {campaign.sent_count}
+                        Giden {campaign.sent_count}
                       </span>
                       <span className="status-pill status-pill--failed">
                         Hata {campaign.failed_count}

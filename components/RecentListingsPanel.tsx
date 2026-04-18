@@ -104,13 +104,13 @@ export default function RecentListingsPanel({ session }: Props) {
 
       <section className="surface-card rounded-[1.65rem] p-4 md:p-5">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-          <div className="max-w-3xl">
-            <p className="section-kicker">Yeni Ilan Akisi</p>
+          <div className="max-w-xl">
+            <p className="section-kicker">Yeni Ilanlar</p>
             <h2 className="mt-2 text-[1.55rem] font-semibold tracking-[-0.04em] text-[var(--text-0)]">
-              Son eklenen ilanlari takip et
+              Son eklenenler
             </h2>
-            <p className="mt-2 text-sm leading-7 text-[var(--text-1)]">
-              Yetkili oldugun illerde sisteme en son dusen ilanlar burada listelenir.
+            <p className="mt-2 text-sm leading-6 text-[var(--text-2)]">
+              Yetkili alanlar icindeki son kayitlar.
             </p>
           </div>
 
@@ -135,13 +135,13 @@ export default function RecentListingsPanel({ session }: Props) {
 
       <section className="table-shell">
         <div className="table-top">
-          <div className="max-w-3xl">
-            <p className="section-kicker">Yeni Kayitlar</p>
+          <div className="max-w-2xl">
+            <p className="section-kicker">Liste</p>
             <h2 className="mt-2 text-[1.45rem] font-semibold tracking-[-0.04em] text-[var(--text-0)]">
               Son 100 ilan
             </h2>
-            <p className="mt-2 text-sm leading-7 text-[var(--text-1)]">
-              Liste created_at alanina gore geriye donuk siralanir.
+            <p className="mt-2 text-sm leading-6 text-[var(--text-2)]">
+              En yeni kayitlar ustte.
             </p>
           </div>
         </div>
@@ -193,7 +193,7 @@ export default function RecentListingsPanel({ session }: Props) {
                     <div className="space-y-1.5">
                       <p className="table-cell--strong">{formatDate(item.created_at)}</p>
                       <p className="table-cell--muted text-sm">
-                        Guncelleme: {formatDate(item.updated_at)}
+                        {formatDate(item.updated_at)}
                       </p>
                     </div>
                   </td>

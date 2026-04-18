@@ -156,9 +156,9 @@ export default function ListingsTable({
   return (
     <div ref={tableRef} className="table-shell">
       <div className="table-top">
-        <div className="max-w-3xl">
+        <div className="max-w-2xl">
           <div className="flex flex-wrap items-center gap-2">
-            <p className="section-kicker">Sonuclar</p>
+            <p className="section-kicker">Liste</p>
             {items.length > 0 && (
               <span className="table-meta-pill">
                 {safePage}. sayfa / {totalPages}
@@ -167,22 +167,19 @@ export default function ListingsTable({
           </div>
 
           <h2 className="mt-2 text-[1.45rem] font-semibold tracking-[-0.04em] text-[var(--text-0)]">
-            Eslestirilen ilan listesi
+            Arama sonuclari
           </h2>
-          <p className="mt-2 text-sm leading-7 text-[var(--text-1)]">
-            Arama sonucunu tek yerden incele, satirlari sec ve kampanya akisina dahil et.
+          <p className="mt-2 text-sm leading-6 text-[var(--text-2)]">
+            Secim yap ve kampanyaya aktar.
           </p>
         </div>
 
         <div className="flex flex-wrap gap-2">
           <span className="metric-chip">
-            Toplam kayit: <strong className="text-[var(--text-0)]">{items.length}</strong>
+            Kayit <strong className="text-[var(--text-0)]">{items.length}</strong>
           </span>
           <span className="metric-chip">
-            Secili: <strong className="text-[var(--text-0)]">{selectedIds.length}</strong>
-          </span>
-          <span className="metric-chip">
-            Sayfa basi: <strong className="text-[var(--text-0)]">{PAGE_SIZE}</strong>
+            Secili <strong className="text-[var(--text-0)]">{selectedIds.length}</strong>
           </span>
         </div>
       </div>
@@ -205,8 +202,8 @@ export default function ListingsTable({
               <th className="table-head-cell min-w-[180px]">Kisi</th>
               <th className="table-head-cell min-w-[200px]">Konum</th>
               <th className="table-head-cell min-w-[120px]">Fiyat</th>
-              <th className="table-head-cell min-w-[170px]">Durum</th>
-              <th className="table-head-cell min-w-[120px]">Aksiyon</th>
+              <th className="table-head-cell min-w-[170px]">Mesaj</th>
+              <th className="table-head-cell min-w-[120px]">Link</th>
             </tr>
           </thead>
 
@@ -240,7 +237,7 @@ export default function ListingsTable({
                         </span>
                         {item.updated_at && (
                           <span className="text-xs text-[var(--text-2)]">
-                            Guncelleme: {formatDate(item.updated_at)}
+                            {formatDate(item.updated_at)}
                           </span>
                         )}
                       </div>
@@ -312,7 +309,7 @@ export default function ListingsTable({
       {items.length > 0 && (
         <div className="flex flex-col gap-3 border-t border-white/8 px-4 py-3 md:flex-row md:items-center md:justify-between">
           <p className="text-sm text-[var(--text-2)]">
-            {startIndex + 1}-{endIndex} arasi kayitlar gosteriliyor. Toplam {items.length} ilan.
+            {startIndex + 1}-{endIndex} / {items.length}
           </p>
 
           <div className="flex flex-wrap items-center justify-end gap-2">

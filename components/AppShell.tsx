@@ -19,45 +19,15 @@ type NavItem = {
 };
 
 const primaryNavItems: NavItem[] = [
-  {
-    href: "/",
-    label: "Ilan Bulma",
-    note: "Bolge bazli arama ve secim",
-    badge: "IB",
-  },
-  {
-    href: "/campaigns",
-    label: "Kampanya Olustur",
-    note: "Hazir secimlerden kampanya kur",
-    badge: "KO",
-  },
-  {
-    href: "/automation",
-    label: "Otomatik Mesaj",
-    note: "WhatsApp entegrasyonu hazirligi",
-    badge: "OM",
-  },
-  {
-    href: "/new-listings",
-    label: "Yeni Ilanlar",
-    note: "Son eklenen kayitlari takip et",
-    badge: "YI",
-  },
-  {
-    href: "/support",
-    label: "Bize Ulasin",
-    note: "Yardim ve oneriler",
-    badge: "BU",
-  },
+  { href: "/", label: "Ilan Bulma", note: "Arama ve secim", badge: "IB" },
+  { href: "/campaigns", label: "Kampanyalar", note: "Taslak ve gonderim", badge: "KP" },
+  { href: "/automation", label: "Otomatik Mesaj", note: "WhatsApp durumu", badge: "OM" },
+  { href: "/new-listings", label: "Yeni Ilanlar", note: "Son eklenenler", badge: "YI" },
+  { href: "/support", label: "Destek", note: "Yardim merkezi", badge: "DS" },
 ];
 
 const secondaryNavItems: NavItem[] = [
-  {
-    href: "/profile",
-    label: "Profil",
-    note: "Hesap ve bolge ayarlari",
-    badge: "PR",
-  },
+  { href: "/profile", label: "Profil", note: "Hesap ve bolgeler", badge: "PR" },
 ];
 
 function getInitials(firstName: string | null | undefined, lastName: string | null | undefined) {
@@ -106,12 +76,12 @@ function SidebarLink({
         {item.badge}
       </span>
 
-      {!collapsed && (
+      {!collapsed ? (
         <span className="min-w-0">
           <span className="sidebar-link__title">{item.label}</span>
           <span className="sidebar-link__note">{item.note}</span>
         </span>
-      )}
+      ) : null}
     </Link>
   );
 }
@@ -128,6 +98,12 @@ export default function AppShell({ title, description, children }: Props) {
     return `${profile?.first_name || ""} ${profile?.last_name || ""}`.trim();
   }, [profile?.first_name, profile?.last_name]);
 
+  const visibleRegions = useMemo(() => {
+    return regions.slice(0, 4);
+  }, [regions]);
+
+  const hiddenRegionCount = Math.max(0, regions.length - visibleRegions.length);
+
   const handleSignOut = async () => {
     try {
       setSigningOut(true);
@@ -138,23 +114,17 @@ export default function AppShell({ title, description, children }: Props) {
     }
   };
 
-  const visibleRegions = useMemo(() => {
-    return regions.slice(0, 4);
-  }, [regions]);
-
-  const hiddenRegionCount = Math.max(0, regions.length - visibleRegions.length);
-
   return (
-    <main className="min-h-screen">
-      {mobileMenuOpen && (
+    <main className="workspace-shell">
+      {mobileMenuOpen ? (
         <button
           aria-label="Menuyu kapat"
           className="fixed inset-0 z-30 bg-black/60 backdrop-blur-sm lg:hidden"
           onClick={() => setMobileMenuOpen(false)}
         />
-      )}
+      ) : null}
 
-      <div className="mx-auto flex min-h-screen max-w-[110rem] gap-4 px-4 py-4 md:px-5 md:py-5">
+      <div className="mx-auto flex min-h-screen max-w-[112rem] gap-4 px-4 py-4 md:px-5 md:py-5">
         <aside
           className={`sidebar-shell ${sidebarCollapsed ? "sidebar-shell--collapsed" : ""} ${
             mobileMenuOpen ? "sidebar-shell--open" : ""
@@ -164,12 +134,12 @@ export default function AppShell({ title, description, children }: Props) {
             <div className="flex min-w-0 items-center gap-3">
               <span className="brand-badge">TD</span>
 
-              {!sidebarCollapsed && (
+              {!sidebarCollapsed ? (
                 <div className="min-w-0">
                   <p className="toolbar-title truncate">Turan Digital</p>
-                  <p className="toolbar-subtitle truncate">Property SaaS workspace</p>
+                  <p className="toolbar-subtitle truncate">Real estate workspace</p>
                 </div>
-              )}
+              ) : null}
             </div>
 
             <button
@@ -183,7 +153,7 @@ export default function AppShell({ title, description, children }: Props) {
 
           <div className="sidebar-group">
             <p className={`sidebar-group__label ${sidebarCollapsed ? "sr-only" : ""}`}>
-              Ana menu
+              Navigasyon
             </p>
 
             <div className="space-y-2">
@@ -200,9 +170,7 @@ export default function AppShell({ title, description, children }: Props) {
           </div>
 
           <div className="sidebar-group mt-auto">
-            <p className={`sidebar-group__label ${sidebarCollapsed ? "sr-only" : ""}`}>
-              Hesap
-            </p>
+            {!sidebarCollapsed ? <p className="sidebar-group__label">Hesap</p> : null}
 
             <div className="space-y-2">
               {secondaryNavItems.map((item) => (
@@ -221,16 +189,16 @@ export default function AppShell({ title, description, children }: Props) {
                 {getInitials(profile?.first_name, profile?.last_name)}
               </div>
 
-              {!sidebarCollapsed && (
+              {!sidebarCollapsed ? (
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-sm font-semibold text-[var(--text-0)]">
                     {fullName || "Musteri hesabi"}
                   </p>
-                  <p className="truncate text-xs text-[var(--text-2)]">
-                    {user?.email || "Bolge bazli erisim aktif"}
+                  <p className="truncate text-xs text-[var(--text-3)]">
+                    {user?.email || "Hesap aktif"}
                   </p>
                 </div>
-              )}
+              ) : null}
             </div>
 
             <button
@@ -244,69 +212,67 @@ export default function AppShell({ title, description, children }: Props) {
         </aside>
 
         <div className="flex min-w-0 flex-1 flex-col gap-4">
-          <header className="surface-card page-rise rounded-[1.6rem] p-4 md:p-5">
-            <div className="flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
-              <div className="min-w-0">
-                <div className="flex items-center gap-3">
-                  <button
-                    onClick={() => setMobileMenuOpen(true)}
-                    className="ghost-btn inline-flex h-10 w-10 items-center justify-center p-0 lg:hidden"
-                    aria-label="Menuyu ac"
-                  >
-                    =
-                  </button>
+          <header className="surface-card page-rise rounded-[1.4rem] px-4 py-4 md:px-5 md:py-4">
+            <div className="workspace-header">
+              <div className="flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
+                <div className="min-w-0">
+                  <div className="flex items-start gap-3">
+                    <button
+                      onClick={() => setMobileMenuOpen(true)}
+                      className="ghost-btn inline-flex h-10 w-10 items-center justify-center p-0 lg:hidden"
+                      aria-label="Menuyu ac"
+                    >
+                      =
+                    </button>
 
-                  <div>
-                    <p className="section-kicker">Calisma Alani</p>
-                    <h1 className="mt-2 text-[clamp(1.55rem,1.36rem+0.8vw,2.15rem)] font-semibold tracking-[-0.04em] text-[var(--text-0)]">
-                      {title}
-                    </h1>
-                    <p className="mt-2 max-w-3xl text-sm leading-7 text-[var(--text-1)]">
-                      {description}
-                    </p>
+                    <div className="min-w-0">
+                      <p className="section-kicker">Workspace</p>
+                      <h1 className="mt-2 text-[clamp(1.45rem,1.28rem+0.7vw,2rem)] font-semibold tracking-[-0.045em] text-[var(--text-0)]">
+                        {title}
+                      </h1>
+                      <p className="mt-2 max-w-3xl text-sm leading-6 text-[var(--text-2)]">
+                        {description}
+                      </p>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              <div className="grid gap-2 sm:grid-cols-3 xl:min-w-[22rem]">
-                <div className="compact-stat">
-                  <p className="compact-stat__label">Yetkili il</p>
-                  <p className="compact-stat__value">{regions.length}</p>
-                </div>
-
-                <div className="compact-stat">
-                  <p className="compact-stat__label">Aktif hesap</p>
-                  <p className="compact-stat__value">{fullName || "Hazir"}</p>
-                </div>
-
-                <div className="compact-stat">
-                  <p className="compact-stat__label">Erisim durumu</p>
-                  <p className="compact-stat__value compact-stat__value--accent">
-                    Aktif
-                  </p>
+                <div className="flex flex-wrap gap-2 xl:justify-end">
+                  <span className="metric-chip">
+                    Il <strong className="text-[var(--text-0)]">{regions.length}</strong>
+                  </span>
+                  <span className="metric-chip">
+                    Hesap{" "}
+                    <strong className="text-[var(--text-0)]">
+                      {fullName || "Hazir"}
+                    </strong>
+                  </span>
+                  <span className="metric-chip">
+                    Durum <strong className="text-[var(--text-0)]">Aktif</strong>
+                  </span>
                 </div>
               </div>
-            </div>
 
-            <div className="soft-divider mt-4 pt-4">
-              <div className="flex flex-wrap gap-2">
-                {visibleRegions.length > 0 ? (
-                  <>
-                    {visibleRegions.map((item) => (
-                      <span key={item.id} className="city-chip city-chip--muted">
-                        {item.city}
-                      </span>
-                    ))}
+              <div className="workspace-strip pt-4">
+                <div className="flex flex-wrap gap-2">
+                  {visibleRegions.length > 0 ? (
+                    <>
+                      {visibleRegions.map((item) => (
+                        <span key={item.id} className="city-chip city-chip--muted">
+                          {item.city}
+                        </span>
+                      ))}
 
-                    {hiddenRegionCount > 0 && (
-                      <span className="city-chip city-chip--muted">
-                        +{hiddenRegionCount} il daha
-                      </span>
-                    )}
-                  </>
-                ) : (
-                  <span className="city-chip city-chip--muted">Henuz il tanimlanmadi</span>
-                )}
+                      {hiddenRegionCount > 0 ? (
+                        <span className="city-chip city-chip--muted">
+                          +{hiddenRegionCount} il
+                        </span>
+                      ) : null}
+                    </>
+                  ) : (
+                    <span className="city-chip city-chip--muted">Bolge bekleniyor</span>
+                  )}
+                </div>
               </div>
             </div>
           </header>

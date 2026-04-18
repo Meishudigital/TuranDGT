@@ -10,14 +10,13 @@ export default function SupportPanel() {
   return (
     <div className="grid gap-5 xl:grid-cols-[minmax(0,1.05fr)_340px]">
       <section className="surface-card rounded-[1.65rem] p-4 md:p-5">
-        <div className="max-w-3xl">
-          <p className="section-kicker">Destek Merkezi</p>
+        <div className="max-w-2xl">
+          <p className="section-kicker">Destek</p>
           <h2 className="mt-2 text-[1.55rem] font-semibold tracking-[-0.04em] text-[var(--text-0)]">
-            Yardim, geri bildirim ve yeni ozellik talepleri
+            Yardim ve geri bildirim
           </h2>
-          <p className="mt-2 text-sm leading-7 text-[var(--text-1)]">
-            Kullanim sorulari, hata bildirimi veya yeni ozellik talepleri icin bu
-            alani bir destek merkezi gibi kullanabiliriz.
+          <p className="mt-2 text-sm leading-6 text-[var(--text-2)]">
+            Sorun, istek veya yeni ozellik taleplerini buradan yonet.
           </p>
         </div>
 
@@ -33,10 +32,10 @@ export default function SupportPanel() {
         <div className="surface-subcard mt-5 rounded-[1.35rem] p-4">
           <div className="grid gap-4">
             <div>
-              <label className="field-label">En hizli destek yolu</label>
+              <label className="field-label">Oncelikli kanal</label>
               <input
                 readOnly
-                value="Mail veya direkt geri bildirim talebi"
+                value="Mail veya dogrudan geri bildirim"
                 className="field-input opacity-70"
               />
             </div>
@@ -45,8 +44,8 @@ export default function SupportPanel() {
               <label className="field-label">Not</label>
               <textarea
                 readOnly
-                value="Bu bolume istersek sonraki asamada gercek bir destek formu, tiket kaydi veya canli yardim akisi ekleyebiliriz."
-                rows={5}
+                value="Istersen bir sonraki adimda bunu gercek destek formu, tiket akisi veya canli yardima cevirebiliriz."
+                rows={4}
                 className="field-input resize-none opacity-70"
               />
             </div>
@@ -57,28 +56,28 @@ export default function SupportPanel() {
       <aside className="surface-card rounded-[1.65rem] p-4">
         <div className="flex h-full flex-col gap-4">
           <div>
-            <p className="section-kicker">Onerilen Basliklar</p>
+            <p className="section-kicker">Kategoriler</p>
             <h2 className="mt-2 text-[1.3rem] font-semibold tracking-[-0.04em] text-[var(--text-0)]">
-              Hangi konuda yazabilirsin?
+              Konu sec
             </h2>
           </div>
 
-          <div className="compact-stat">
-            <p className="compact-stat__label">Yardim</p>
-            <p className="compact-stat__value">Kullanim adimlarini netlestirme</p>
-          </div>
+            <div className="compact-stat">
+              <p className="compact-stat__label">Yardim</p>
+              <p className="compact-stat__value">Kullanim akisi</p>
+            </div>
 
-          <div className="compact-stat">
-            <p className="compact-stat__label">Hata</p>
-            <p className="compact-stat__value">Beklenmeyen ekran veya veri problemi</p>
-          </div>
+            <div className="compact-stat">
+              <p className="compact-stat__label">Hata</p>
+              <p className="compact-stat__value">Ekran veya veri sorunu</p>
+            </div>
 
-          <div className="compact-stat">
-            <p className="compact-stat__label">Oneri</p>
-            <p className="compact-stat__value">Yeni moduller ve is akisi talepleri</p>
+            <div className="compact-stat">
+              <p className="compact-stat__label">Oneri</p>
+              <p className="compact-stat__value">Yeni modul ve akis</p>
+            </div>
           </div>
-        </div>
-      </aside>
-    </div>
-  );
+        </aside>
+      </div>
+    );
 }

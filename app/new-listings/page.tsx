@@ -7,7 +7,7 @@ export default function NewListingsPage() {
   return (
     <DashboardPageShell
       title="Yeni Ilanlar"
-      description="Yetkili oldugun illerde sisteme yeni dusen ilanlari tek listede goruntule."
+      description="Son eklenen kayitlari izle."
       loadingMessage="Yeni ilanlar ekrani hazirlaniyor..."
     >
       {({ session }) => <RecentListingsPanel session={session} />}

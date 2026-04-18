@@ -7,7 +7,7 @@ export default function HomePage() {
   return (
     <DashboardPageShell
       title="Ilan Bulma"
-      description="Yetkili iller icindeki ilanlari filtrele, sec ve kampanya akisi icin hazirla."
+      description="Bolge icinde ilan ara ve sec."
       loadingMessage="Ilan bulma ekrani hazirlaniyor..."
     >
       {({ session, allowedCities }) => (
