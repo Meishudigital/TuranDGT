@@ -5,6 +5,10 @@ import {
 } from "@/lib/auth-server";
 import { supabaseAdmin } from "@/lib/supabase-admin";
 import { getCityQueryValues } from "@/lib/turkey-cities";
+import {
+  getUserWhatsAppIntegration,
+  isReadyWhatsAppIntegration,
+} from "@/lib/whatsapp-integrations";
 
 export const runtime = "nodejs";
 
@@ -77,6 +81,9 @@ export async function POST(req: NextRequest) {
       )
     );
     const allowedCityQueryValues = getCityQueryValues(auth.context.allowedCities);
+    const integration = await getUserWhatsAppIntegration(auth.context.user.id);
+    const integrationId =
+      integration && isReadyWhatsAppIntegration(integration) ? integration.id : null;
 
     const { data: listingRows, error: listingsError } = await supabaseAdmin
       .from("listings")
@@ -120,6 +127,7 @@ export async function POST(req: NextRequest) {
       .from("message_campaigns")
       .insert({
         user_id: auth.context.user.id,
+        integration_id: integrationId,
         name: campaignName,
         message_template: messageTemplate,
         city: city || null,
@@ -145,6 +153,7 @@ export async function POST(req: NextRequest) {
 
     const queueRows = validListings.map((item) => ({
       campaign_id: campaignData.id,
+      integration_id: integrationId,
       listing_id: item.id,
       phone_number: String(item.phone_number || item.phone_e164 || "").trim(),
       phone_e164: String(item.phone_e164 || "").trim() || null,

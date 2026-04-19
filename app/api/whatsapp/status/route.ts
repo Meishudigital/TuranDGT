@@ -4,9 +4,12 @@ import {
   requireCompletedOnboarding,
 } from "@/lib/auth-server";
 import {
-  getMaskedPhoneNumberId,
-  getWhatsAppConfig,
-} from "@/lib/whatsapp-cloud";
+  getIntegrationConfig,
+  getIntegrationMissingRequirements,
+  getUserWhatsAppIntegration,
+  isReadyWhatsAppIntegration,
+} from "@/lib/whatsapp-integrations";
+import { getMaskedPhoneNumberId } from "@/lib/whatsapp-cloud";
 
 export const runtime = "nodejs";
 
@@ -23,40 +26,24 @@ export async function GET(req: NextRequest) {
     return onboardingError;
   }
 
-  const config = getWhatsAppConfig();
-  const missingRequirements: string[] = [];
-  const optionalRecommendations: string[] = [];
-
-  if (!config.accessToken) {
-    missingRequirements.push("WHATSAPP_ACCESS_TOKEN");
-  }
-
-  if (!config.phoneNumberId) {
-    missingRequirements.push("WHATSAPP_PHONE_NUMBER_ID");
-  }
-
-  if (!config.verifyToken) {
-    missingRequirements.push("WHATSAPP_WEBHOOK_VERIFY_TOKEN");
-  }
-
-  if (!config.templateName) {
-    optionalRecommendations.push("WHATSAPP_TEMPLATE_NAME");
-  }
+  const integration = await getUserWhatsAppIntegration(auth.context.user.id);
+  const config = getIntegrationConfig(integration);
+  const missingRequirements = getIntegrationMissingRequirements(integration);
+  const templateName = integration?.templateName || null;
 
   return NextResponse.json({
     ok: true,
-    configured: config.configured,
-    mode: config.mode,
-    templateConfigured: Boolean(config.templateName),
-    templateName: config.templateName,
-    templateLanguage: config.templateLanguage,
-    phoneNumberId: getMaskedPhoneNumberId(config.phoneNumberId),
-    webhookConfigured: Boolean(config.verifyToken),
+    configured: isReadyWhatsAppIntegration(integration),
+    mode: config?.mode || "text",
+    templateConfigured: Boolean(templateName),
+    templateName,
+    templateLanguage: integration?.templateLanguage || "tr",
+    phoneNumberId: getMaskedPhoneNumberId(integration?.phoneNumberId || ""),
+    webhookConfigured: Boolean(integration?.webhookSubscribed),
     missingRequirements,
-    optionalRecommendations,
-    recommendedMode:
-      config.mode === "template"
-        ? "Ilk temas icin uygun"
-        : "Yalnizca acik sohbet pencerelerinde guvenli",
+    optionalRecommendations: templateName ? [] : ["Şablon adı"],
+    recommendedMode: templateName
+      ? "İlk temas için uygun"
+      : "İlk gönderim için şablon eklemen önerilir",
   });
 }

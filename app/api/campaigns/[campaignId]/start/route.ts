@@ -4,7 +4,13 @@ import {
   requireCompletedOnboarding,
 } from "@/lib/auth-server";
 import { supabaseAdmin } from "@/lib/supabase-admin";
-import { getWhatsAppConfig, sendCampaignMessage } from "@/lib/whatsapp-cloud";
+import { sendCampaignMessage } from "@/lib/whatsapp-cloud";
+import {
+  getIntegrationConfig,
+  getUserWhatsAppIntegration,
+  getWhatsAppIntegrationById,
+  isReadyWhatsAppIntegration,
+} from "@/lib/whatsapp-integrations";
 
 export const runtime = "nodejs";
 
@@ -50,18 +56,6 @@ export async function POST(
       return onboardingError;
     }
 
-    const config = getWhatsAppConfig();
-
-    if (!config.configured) {
-      return NextResponse.json(
-        {
-          ok: false,
-          error: "WhatsApp Cloud API ayarlari eksik.",
-        },
-        { status: 400 }
-      );
-    }
-
     const body = (await req.json().catch(() => ({}))) as {
       confirmLiveSend?: boolean;
     };
@@ -71,7 +65,7 @@ export async function POST(
         {
           ok: false,
           error:
-            "Canli gonderim onayi olmadan kampanya baslatilamaz. Once ekrandaki onay adimini tamamla.",
+            "Canlı gönderim onayı olmadan kampanya başlatılamaz. Önce ekrandaki onay adımını tamamla.",
         },
         { status: 400 }
       );
@@ -82,14 +76,14 @@ export async function POST(
 
     if (!Number.isInteger(numericCampaignId) || numericCampaignId <= 0) {
       return NextResponse.json(
-        { ok: false, error: "Gecersiz kampanya numarasi." },
+        { ok: false, error: "Geçersiz kampanya numarası." },
         { status: 400 }
       );
     }
 
     const { data: ownedCampaign, error: ownedCampaignError } = await supabaseAdmin
       .from("message_campaigns")
-      .select("id")
+      .select("id, integration_id")
       .eq("id", numericCampaignId)
       .eq("user_id", auth.context.user.id)
       .maybeSingle();
@@ -100,7 +94,7 @@ export async function POST(
           ok: false,
           error:
             ownedCampaignError.message.includes("user_id")
-              ? "message_campaigns tablosunda user_id kolonu eksik. SQL guncellemesini calistir."
+              ? "message_campaigns tablosunda user_id kolonu eksik. SQL güncellemesini çalıştır."
               : ownedCampaignError.message,
         },
         { status: 500 }
@@ -109,9 +103,55 @@ export async function POST(
 
     if (!ownedCampaign) {
       return NextResponse.json(
-        { ok: false, error: "Bu kampanyaya erisim yok veya kampanya bulunamadi." },
+        { ok: false, error: "Bu kampanyaya erişim yok veya kampanya bulunamadı." },
         { status: 404 }
       );
+    }
+
+    const savedIntegration = ownedCampaign.integration_id
+      ? await getWhatsAppIntegrationById(ownedCampaign.integration_id, auth.context.user.id)
+      : await getUserWhatsAppIntegration(auth.context.user.id);
+
+    if (!savedIntegration || !isReadyWhatsAppIntegration(savedIntegration)) {
+      return NextResponse.json(
+        {
+          ok: false,
+          error: "Gönderim için aktif bir WhatsApp bağlantısı bulunamadı.",
+        },
+        { status: 400 }
+      );
+    }
+
+    const activeIntegration = savedIntegration;
+    const config = getIntegrationConfig(activeIntegration);
+
+    if (!config) {
+      return NextResponse.json(
+        {
+          ok: false,
+          error: "WhatsApp bağlantısı hazır değil.",
+        },
+        { status: 400 }
+      );
+    }
+
+    if (ownedCampaign.integration_id !== activeIntegration.id) {
+      const { error: campaignIntegrationError } = await supabaseAdmin
+        .from("message_campaigns")
+        .update({
+          integration_id: activeIntegration.id,
+        })
+        .eq("id", numericCampaignId);
+
+      if (campaignIntegrationError) {
+        return NextResponse.json(
+          {
+            ok: false,
+            error: campaignIntegrationError.message,
+          },
+          { status: 500 }
+        );
+      }
     }
 
     const { data: queueRows, error: queueError } = await supabaseAdmin
@@ -143,8 +183,9 @@ export async function POST(
         failedCount += 1;
 
         await updateQueueRow(row.id, {
+          integration_id: activeIntegration.id,
           status: "failed",
-          error_message: "Gecerli telefon numarasi bulunamadi.",
+          error_message: "Geçerli telefon numarası bulunamadı.",
           provider_status: "failed",
           send_attempts: nextAttemptCount,
           last_attempt_at: new Date().toISOString(),
@@ -155,14 +196,18 @@ export async function POST(
       }
 
       try {
-        const result = await sendCampaignMessage({
-          to: phone,
-          messageText: row.message_text,
-        });
+        const result = await sendCampaignMessage(
+          {
+            to: phone,
+            messageText: row.message_text,
+          },
+          config
+        );
 
         sentCount += 1;
 
         await updateQueueRow(row.id, {
+          integration_id: activeIntegration.id,
           status: "sent",
           provider_status: result.mode === "template" ? "template_sent" : "text_sent",
           provider_message_id: result.providerMessageId,
@@ -176,10 +221,11 @@ export async function POST(
         failedCount += 1;
 
         await updateQueueRow(row.id, {
+          integration_id: activeIntegration.id,
           status: "failed",
           provider_status: "failed",
           error_message:
-            error instanceof Error ? error.message : "WhatsApp gonderimi basarisiz oldu.",
+            error instanceof Error ? error.message : "WhatsApp gönderimi başarısız oldu.",
           send_attempts: nextAttemptCount,
           last_attempt_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
@@ -215,7 +261,7 @@ export async function POST(
     return NextResponse.json(
       {
         ok: false,
-        error: error instanceof Error ? error.message : "Kampanya baslatilamadi.",
+        error: error instanceof Error ? error.message : "Kampanya başlatılamadı.",
       },
       { status: 500 }
     );

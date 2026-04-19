@@ -3,7 +3,12 @@ import {
   requireAuthenticatedUser,
   requireCompletedOnboarding,
 } from "@/lib/auth-server";
-import { getWhatsAppConfig, sendCampaignMessage } from "@/lib/whatsapp-cloud";
+import { sendCampaignMessage } from "@/lib/whatsapp-cloud";
+import {
+  getIntegrationConfig,
+  getUserWhatsAppIntegration,
+  isReadyWhatsAppIntegration,
+} from "@/lib/whatsapp-integrations";
 
 export const runtime = "nodejs";
 
@@ -41,13 +46,25 @@ export async function POST(req: NextRequest) {
       return onboardingError;
     }
 
-    const config = getWhatsAppConfig();
+    const integration = await getUserWhatsAppIntegration(auth.context.user.id);
 
-    if (!config.configured) {
+    if (!isReadyWhatsAppIntegration(integration)) {
       return NextResponse.json(
         {
           ok: false,
-          error: "WhatsApp Cloud API ayarlari eksik.",
+          error: "Önce WhatsApp bağlantı bilgilerini eksiksiz kaydet.",
+        },
+        { status: 400 }
+      );
+    }
+
+    const config = getIntegrationConfig(integration);
+
+    if (!config) {
+      return NextResponse.json(
+        {
+          ok: false,
+          error: "WhatsApp bağlantısı hazır değil.",
         },
         { status: 400 }
       );
@@ -63,22 +80,25 @@ export async function POST(req: NextRequest) {
 
     if (!phoneNumber) {
       return NextResponse.json(
-        { ok: false, error: "Test icin gecerli bir telefon numarasi gir." },
+        { ok: false, error: "Test için geçerli bir telefon numarası gir." },
         { status: 400 }
       );
     }
 
     if (!messageText) {
       return NextResponse.json(
-        { ok: false, error: "Test icin mesaj metni zorunludur." },
+        { ok: false, error: "Test için mesaj metni zorunludur." },
         { status: 400 }
       );
     }
 
-    const result = await sendCampaignMessage({
-      to: phoneNumber,
-      messageText,
-    });
+    const result = await sendCampaignMessage(
+      {
+        to: phoneNumber,
+        messageText,
+      },
+      config
+    );
 
     return NextResponse.json({
       ok: true,
@@ -90,7 +110,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(
       {
         ok: false,
-        error: error instanceof Error ? error.message : "Test mesaji gonderilemedi.",
+        error: error instanceof Error ? error.message : "Test mesajı gönderilemedi.",
       },
       { status: 500 }
     );

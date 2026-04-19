@@ -1,6 +1,6 @@
 type WhatsAppSendMode = "text" | "template";
 
-type WhatsAppConfig = {
+export type WhatsAppConfig = {
   accessToken: string;
   phoneNumberId: string;
   apiVersion: string;
@@ -75,9 +75,10 @@ function getErrorMessage(responseBody: unknown, fallbackMessage: string) {
 }
 
 export async function sendCampaignMessage(
-  input: SendCampaignMessageInput
+  input: SendCampaignMessageInput,
+  overrideConfig?: WhatsAppConfig | null
 ): Promise<SendCampaignMessageResult> {
-  const config = getWhatsAppConfig();
+  const config = overrideConfig || getWhatsAppConfig();
 
   if (!config.configured) {
     throw new Error("WhatsApp Cloud API ayarlari eksik.");
