@@ -205,14 +205,14 @@ export default function FilterPanel({ session, allowedCities }: Props) {
         const json = await res.json();
 
         if (!res.ok || !json.ok) {
-          setErrorText(json.error || "Iller alinamadi.");
+          setErrorText(json.error || "İller alınamadı.");
           setCities([]);
           return;
         }
 
         setCities(json.items || []);
       } catch (error) {
-        setErrorText(error instanceof Error ? error.message : "Iller alinamadi.");
+        setErrorText(error instanceof Error ? error.message : "İller alınamadı.");
         setCities([]);
       } finally {
         setLoadingCities(false);
@@ -248,7 +248,7 @@ export default function FilterPanel({ session, allowedCities }: Props) {
         const json = await res.json();
 
         if (!res.ok || !json.ok) {
-          setErrorText(json.error || "Ilceler alinamadi.");
+          setErrorText(json.error || "İlçeler alınamadı.");
           setDistricts([]);
           return;
         }
@@ -265,7 +265,7 @@ export default function FilterPanel({ session, allowedCities }: Props) {
           setDistrict(nextDistrict);
         }
       } catch (error) {
-        setErrorText(error instanceof Error ? error.message : "Ilceler alinamadi.");
+        setErrorText(error instanceof Error ? error.message : "İlçeler alınamadı.");
         setDistricts([]);
       } finally {
         setLoadingDistricts(false);
@@ -302,7 +302,7 @@ export default function FilterPanel({ session, allowedCities }: Props) {
         const json = await res.json();
 
         if (!res.ok || !json.ok) {
-          setErrorText(json.error || "Mahalleler alinamadi.");
+          setErrorText(json.error || "Mahalleler alınamadı.");
           setNeighborhoods([]);
           return;
         }
@@ -322,7 +322,7 @@ export default function FilterPanel({ session, allowedCities }: Props) {
         restoreStateRef.current = null;
       } catch (error) {
         setErrorText(
-          error instanceof Error ? error.message : "Mahalleler alinamadi."
+          error instanceof Error ? error.message : "Mahalleler alınamadı."
         );
         setNeighborhoods([]);
       } finally {
@@ -393,7 +393,7 @@ export default function FilterPanel({ session, allowedCities }: Props) {
       const json = await res.json();
 
       if (!res.ok || !json.ok) {
-        setErrorText(json.error || "Kayitlar alinamadi.");
+        setErrorText(json.error || "Kayıtlar alınamadı.");
         setItems([]);
         return;
       }
@@ -401,7 +401,7 @@ export default function FilterPanel({ session, allowedCities }: Props) {
       setItems(json.items || []);
       setSuccessText(`${(json.items || []).length} ilan bulundu.`);
     } catch (error) {
-      setErrorText(error instanceof Error ? error.message : "Kayitlar alinamadi.");
+      setErrorText(error instanceof Error ? error.message : "Kayıtlar alınamadı.");
       setItems([]);
     } finally {
       setSearching(false);
@@ -430,12 +430,12 @@ export default function FilterPanel({ session, allowedCities }: Props) {
   }, [items, selectedIds]);
 
   const activeScope = useMemo(() => {
-    return [city, district, neighborhood].filter(Boolean).join(" / ") || "Tum yetkili iller";
+    return [city, district, neighborhood].filter(Boolean).join(" / ") || "Tüm yetkili iller";
   }, [city, district, neighborhood]);
 
   const handleSendToCampaign = () => {
     if (selectedListings.length === 0) {
-      setErrorText("Kampanya olusturmak icin once en az 1 ilan secmelisin.");
+      setErrorText("Kampanya oluşturmak için önce en az 1 ilan seçmelisin.");
       return;
     }
 
@@ -459,7 +459,7 @@ export default function FilterPanel({ session, allowedCities }: Props) {
       })),
     });
 
-    router.push("/campaigns");
+    router.push("/workspace/campaigns");
   };
 
   return (
@@ -478,16 +478,16 @@ export default function FilterPanel({ session, allowedCities }: Props) {
 
       <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_320px] xl:items-start">
         <div className="space-y-5">
-          <section className="surface-card page-rise page-rise-3 rounded-[1.65rem] p-4 md:p-5">
+          <section className="surface-card surface-card--section page-rise page-rise-3 rounded-[1.65rem] p-4 md:p-5">
             <div className="flex flex-col gap-4">
               <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                 <div className="max-w-xl">
-                  <p className="section-kicker">Arama</p>
+                  <p className="section-kicker">Arama alanı</p>
                   <h2 className="mt-2 text-[1.5rem] font-semibold tracking-[-0.04em] text-[var(--text-0)]">
-                    Bolge icinde ilan ara
+                    Bölge içinde ilan ara
                   </h2>
                   <p className="mt-2 text-sm leading-6 text-[var(--text-2)]">
-                    Filtrele, listele ve secimi kampanyaya tası.
+                    Filtrele, listele ve seçimi kampanyaya taşı.
                   </p>
                 </div>
 
@@ -498,22 +498,22 @@ export default function FilterPanel({ session, allowedCities }: Props) {
                   </div>
 
                   <div className="compact-stat">
-                    <p className="compact-stat__label">Sonuc</p>
+                    <p className="compact-stat__label">Sonuç</p>
                     <p className="compact-stat__value">{items.length}</p>
                   </div>
 
                   <div className="compact-stat">
-                    <p className="compact-stat__label">Secim</p>
+                    <p className="compact-stat__label">Seçim</p>
                     <p className="compact-stat__value">{selectedIds.length}</p>
                   </div>
                 </div>
               </div>
 
-              <div className="surface-subcard rounded-[1.35rem] p-4">
+              <div className="surface-subcard surface-subcard--inset rounded-[1.35rem] p-4">
                 <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
                   <div>
                     <p className="field-label mb-1">Filtreler</p>
-                    <p className="text-sm text-[var(--text-3)]">Yetkili alanlar icinde arama yap.</p>
+                    <p className="text-sm text-[var(--text-3)]">Yalnızca yetkili bölgelerde ara.</p>
                   </div>
 
                   <span className="metric-chip">
@@ -523,14 +523,14 @@ export default function FilterPanel({ session, allowedCities }: Props) {
 
                 <div className="grid gap-3 xl:grid-cols-[minmax(0,0.95fr)_minmax(0,0.95fr)_minmax(0,0.95fr)_140px_120px]">
                   <div>
-                    <label className="field-label">Il</label>
+                    <label className="field-label">İl</label>
                     <select
                       value={city}
                       onChange={(event) => handleCitySelect(event.target.value)}
                       className="field-input"
                     >
                       <option value="">
-                        {loadingCities ? "Yukleniyor..." : "Tum yetkili iller"}
+                        {loadingCities ? "Yükleniyor..." : "Tüm yetkili iller"}
                       </option>
                       {cities.map((item) => (
                         <option key={item} value={item}>
@@ -541,7 +541,7 @@ export default function FilterPanel({ session, allowedCities }: Props) {
                   </div>
 
                   <div>
-                    <label className="field-label">Ilce</label>
+                    <label className="field-label">İlçe</label>
                     <select
                       value={district}
                       onChange={(event) => handleDistrictSelect(event.target.value)}
@@ -550,10 +550,10 @@ export default function FilterPanel({ session, allowedCities }: Props) {
                     >
                       <option value="">
                         {!city
-                          ? "Once il sec"
+                          ? "Önce il seç"
                           : loadingDistricts
-                            ? "Yukleniyor..."
-                            : "Tum ilceler"}
+                            ? "Yükleniyor..."
+                            : "Tüm ilçeler"}
                       </option>
                       {districts.map((item) => (
                         <option key={item} value={item}>
@@ -573,10 +573,10 @@ export default function FilterPanel({ session, allowedCities }: Props) {
                     >
                       <option value="">
                         {!city || !district
-                          ? "Once il ve ilce sec"
+                          ? "Önce il ve ilçe seç"
                           : loadingNeighborhoods
-                            ? "Yukleniyor..."
-                            : "Tum mahalleler"}
+                            ? "Yükleniyor..."
+                            : "Tüm mahalleler"}
                       </option>
                       {neighborhoods.map((item) => (
                         <option key={item} value={item}>
@@ -592,7 +592,7 @@ export default function FilterPanel({ session, allowedCities }: Props) {
                       disabled={searching || loadingCities}
                       className="primary-btn w-full"
                     >
-                      {searching ? "Araniyor..." : "Ara"}
+                      {searching ? "Aranıyor..." : "Ara"}
                     </button>
                   </div>
 
@@ -609,7 +609,7 @@ export default function FilterPanel({ session, allowedCities }: Props) {
 
                 <div className="soft-divider mt-4 pt-4">
                   <div className="mb-3">
-                    <p className="field-label mb-1">Hizli secim</p>
+                    <p className="field-label mb-1">Hızlı seçim</p>
                   </div>
 
                   <div className="flex flex-wrap gap-2">
@@ -619,7 +619,7 @@ export default function FilterPanel({ session, allowedCities }: Props) {
                         !city ? "city-chip--active" : "city-chip--muted"
                       }`}
                     >
-                      Tum yetkili iller
+                      Tüm yetkili iller
                     </button>
 
                     {allowedCities.map((item) => {
@@ -653,15 +653,15 @@ export default function FilterPanel({ session, allowedCities }: Props) {
           />
         </div>
 
-        <aside className="surface-card page-rise page-rise-4 rounded-[1.65rem] p-4 xl:sticky xl:top-5">
+        <aside className="surface-card surface-card--rail page-rise page-rise-4 rounded-[1.65rem] p-4 xl:sticky xl:top-5">
           <div className="flex flex-col gap-4">
             <div>
-              <p className="section-kicker">Secim</p>
+              <p className="section-kicker">Seçim</p>
               <h2 className="mt-2 text-[1.35rem] font-semibold tracking-[-0.04em] text-[var(--text-0)]">
-                Kampanya sepati
+                Kampanya sepeti
               </h2>
               <p className="mt-2 text-sm leading-6 text-[var(--text-2)]">
-                Secilen ilanlar kampanya ekranina tasinir.
+                Seçilen ilanlar kampanya ekranına taşınır.
               </p>
             </div>
 
@@ -672,24 +672,24 @@ export default function FilterPanel({ session, allowedCities }: Props) {
               </div>
 
               <div className="compact-stat">
-                <p className="compact-stat__label">Secilen</p>
+                <p className="compact-stat__label">Seçilen</p>
                 <p className="compact-stat__value">{selectedIds.length}</p>
               </div>
 
               <div className="compact-stat">
                 <p className="compact-stat__label">Durum</p>
                 <p className="compact-stat__value">
-                  {selectedIds.length > 0 ? "Kampanyaya hazir" : "Secim bekliyor"}
+                  {selectedIds.length > 0 ? "Kampanyaya hazır" : "Seçim bekliyor"}
                 </p>
               </div>
             </div>
 
-            <div className="surface-subcard rounded-[1.25rem] p-4">
-              <p className="field-label mb-2">Ozet</p>
+            <div className="surface-subcard surface-subcard--soft rounded-[1.25rem] p-4">
+              <p className="field-label mb-2">Özet</p>
               <p className="text-sm leading-6 text-[var(--text-2)]">
                 {selectedIds.length > 0
-                  ? `${selectedIds.length} ilan kampanya icin hazir.`
-                  : "Henuz secim yok."}
+                  ? `${selectedIds.length} ilan kampanya için hazır.`
+                  : "Henüz seçim yok."}
               </p>
 
               <div className="mt-4 flex flex-col gap-3">
@@ -698,7 +698,7 @@ export default function FilterPanel({ session, allowedCities }: Props) {
                   disabled={selectedIds.length === 0}
                   className="primary-btn w-full"
                 >
-                  Kampanya Ekranina Gec
+                  Kampanya ekranına geç
                 </button>
 
                 <button
@@ -706,7 +706,7 @@ export default function FilterPanel({ session, allowedCities }: Props) {
                   disabled={selectedIds.length === 0}
                   className="ghost-btn w-full"
                 >
-                  Secimi Temizle
+                  Seçimi temizle
                 </button>
               </div>
             </div>

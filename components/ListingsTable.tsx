@@ -41,7 +41,7 @@ function formatPrice(price: number | null) {
 
 function formatDate(value: string | null) {
   if (!value) {
-    return "Henuz mesaj yok";
+    return "Henüz mesaj yok";
   }
 
   const date = new Date(value);
@@ -61,7 +61,7 @@ function formatStatus(status: string | null) {
     case "pending":
       return "Bekliyor";
     case "sent":
-      return "Gonderildi";
+      return "Gönderildi";
     case "failed":
       return "Hata";
     default:
@@ -167,19 +167,19 @@ export default function ListingsTable({
           </div>
 
           <h2 className="mt-2 text-[1.45rem] font-semibold tracking-[-0.04em] text-[var(--text-0)]">
-            Arama sonuclari
+            Arama sonuçları
           </h2>
           <p className="mt-2 text-sm leading-6 text-[var(--text-2)]">
-            Secim yap ve kampanyaya aktar.
+            Seçim yap ve kampanyaya aktar.
           </p>
         </div>
 
         <div className="flex flex-wrap gap-2">
           <span className="metric-chip">
-            Kayit <strong className="text-[var(--text-0)]">{items.length}</strong>
+            Kayıt <strong className="text-[var(--text-0)]">{items.length}</strong>
           </span>
           <span className="metric-chip">
-            Secili <strong className="text-[var(--text-0)]">{selectedIds.length}</strong>
+            Seçili <strong className="text-[var(--text-0)]">{selectedIds.length}</strong>
           </span>
         </div>
       </div>
@@ -194,12 +194,12 @@ export default function ListingsTable({
                   checked={allSelected}
                   onChange={() => onToggleAll(pageIds)}
                   disabled={pageItems.length === 0}
-                  aria-label="Tum sonuclari sec"
+                  aria-label="Tüm sonuçları seç"
                   className="h-4 w-4 rounded border-white/20 bg-black/40"
                 />
               </th>
-              <th className="table-head-cell min-w-[280px]">Ilan</th>
-              <th className="table-head-cell min-w-[180px]">Kisi</th>
+              <th className="table-head-cell min-w-[280px]">İlan</th>
+              <th className="table-head-cell min-w-[180px]">Kişi</th>
               <th className="table-head-cell min-w-[200px]">Konum</th>
               <th className="table-head-cell min-w-[120px]">Fiyat</th>
               <th className="table-head-cell min-w-[170px]">Mesaj</th>
@@ -221,7 +221,7 @@ export default function ListingsTable({
                       type="checkbox"
                       checked={checked}
                       onChange={() => onToggleOne(item.id)}
-                      aria-label={`${item.title || "Ilan"} sec`}
+                      aria-label={`${item.title || "İlan"} seç`}
                       className="mt-1 h-4 w-4 rounded border-white/20 bg-black/40"
                     />
                   </td>
@@ -229,7 +229,7 @@ export default function ListingsTable({
                   <td className="table-cell">
                     <div className="space-y-2">
                       <p className="table-title text-[0.98rem] font-semibold">
-                        {item.title || "Baslik bulunamadi"}
+                        {item.title || "Başlık bulunamadı"}
                       </p>
                       <div className="flex flex-wrap items-center gap-2">
                         <span className="table-meta-pill">
@@ -285,7 +285,7 @@ export default function ListingsTable({
                         rel="noreferrer"
                         className="secondary-btn px-3.5 py-2 text-sm"
                       >
-                        Ilani Ac
+                         İlanı aç
                       </a>
                     ) : (
                       <span className="table-cell--muted">-</span>
@@ -298,7 +298,7 @@ export default function ListingsTable({
             {pageItems.length === 0 && (
               <tr>
                 <td colSpan={7} className="empty-state">
-                  Filtre sec ve aramayi baslat. Sonuclar burada listelenecek.
+                  Filtre seç ve aramayı başlat. Sonuçlar burada listelenecek.
                 </td>
               </tr>
             )}
@@ -318,7 +318,7 @@ export default function ListingsTable({
               disabled={safePage === 1}
               className="ghost-btn px-3.5 py-2 text-sm"
             >
-              Onceki
+              Önceki
             </button>
 
             {pageNumbers.map((pageNumber, index) => {

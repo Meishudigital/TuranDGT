@@ -27,7 +27,7 @@ async function fetchQueueItems(session: Session) {
   const json = await res.json();
 
   if (!res.ok || !json.ok) {
-    throw new Error(json.error || "Queue verileri alinamadi.");
+          throw new Error(json.error || "Sıra verileri alınamadı.");
   }
 
   return (json.items || []) as QueueItem[];
@@ -38,7 +38,7 @@ async function fetchWhatsAppStatus(session: Session) {
   const json = await res.json();
 
   if (!res.ok || !json.ok) {
-    throw new Error(json.error || "WhatsApp durumu alinamadi.");
+    throw new Error(json.error || "WhatsApp durumu alınamadı.");
   }
 
   return json as WhatsAppStatus & { ok: true };
@@ -75,7 +75,7 @@ export default function AutomationPanel({ session }: Props) {
         }
 
         setErrorText(
-          error instanceof Error ? error.message : "Otomasyon verileri alinamadi."
+          error instanceof Error ? error.message : "Otomasyon verileri alınamadı."
         );
       } finally {
         if (active) {
@@ -108,15 +108,15 @@ export default function AutomationPanel({ session }: Props) {
       {errorText && <div className="info-banner info-banner--error">{errorText}</div>}
 
       <div className="grid gap-5 xl:grid-cols-[minmax(0,1.1fr)_340px]">
-        <section className="surface-card rounded-[1.65rem] p-4 md:p-5">
+        <section className="surface-card surface-card--section rounded-[1.65rem] p-4 md:p-5">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
             <div className="max-w-xl">
-              <p className="section-kicker">WhatsApp Cloud API</p>
+              <p className="section-kicker">WhatsApp</p>
               <h2 className="mt-2 text-[1.55rem] font-semibold tracking-[-0.04em] text-[var(--text-0)]">
-                Gonderim durumu
+                Gönderim durumu
               </h2>
               <p className="mt-2 text-sm leading-6 text-[var(--text-2)]">
-                Kurulum ve queue akisini tek ekranda takip et.
+                Kurulumu ve mesaj sırasını tek ekranda takip et.
               </p>
             </div>
 
@@ -124,17 +124,17 @@ export default function AutomationPanel({ session }: Props) {
               <div className="compact-stat">
                 <p className="compact-stat__label">Durum</p>
                 <p className="compact-stat__value">
-                  {status?.configured ? "Hazir" : loading ? "Kontrol" : "Eksik"}
+                  {status?.configured ? "Hazır" : loading ? "Kontrol" : "Eksik"}
                 </p>
               </div>
 
               <div className="compact-stat">
-                <p className="compact-stat__label">Bekleyen queue</p>
+                <p className="compact-stat__label">Bekleyen sıra</p>
                 <p className="compact-stat__value">{pendingCount}</p>
               </div>
 
               <div className="compact-stat">
-                <p className="compact-stat__label">Basarisiz</p>
+                <p className="compact-stat__label">Başarısız</p>
                 <p className="compact-stat__value">{failedCount}</p>
               </div>
             </div>
@@ -144,12 +144,12 @@ export default function AutomationPanel({ session }: Props) {
             <div className="compact-stat">
               <p className="compact-stat__label">Mod</p>
               <p className="compact-stat__value">
-                {status?.mode === "template" ? "Template" : "Text"}
+                {status?.mode === "template" ? "Şablon" : "Serbest metin"}
               </p>
             </div>
 
             <div className="compact-stat">
-              <p className="compact-stat__label">Template</p>
+              <p className="compact-stat__label">Şablon</p>
               <p className="compact-stat__value">
                 {status?.templateName || "Yok"}
               </p>
@@ -158,30 +158,30 @@ export default function AutomationPanel({ session }: Props) {
             <div className="compact-stat">
               <p className="compact-stat__label">Webhook</p>
               <p className="compact-stat__value">
-                {status?.webhookConfigured ? "Hazir" : "Eksik"}
+                {status?.webhookConfigured ? "Hazır" : "Eksik"}
               </p>
             </div>
 
             <div className="compact-stat">
-              <p className="compact-stat__label">Phone ID</p>
+              <p className="compact-stat__label">Numara kimliği</p>
               <p className="compact-stat__value">{status?.phoneNumberId || "-"}</p>
             </div>
           </div>
 
-          <div className="surface-subcard mt-5 rounded-[1.35rem] p-4">
-            <p className="field-label mb-2">Yorum</p>
-            <p className="text-sm leading-6 text-[var(--text-2)]">
-              {status?.recommendedMode || (loading ? "Yukleniyor..." : "-")}
-            </p>
-          </div>
-        </section>
+            <div className="surface-subcard surface-subcard--soft mt-5 rounded-[1.35rem] p-4">
+              <p className="field-label mb-2">Yorum</p>
+              <p className="text-sm leading-6 text-[var(--text-2)]">
+                {status?.recommendedMode || (loading ? "Yükleniyor..." : "-")}
+              </p>
+            </div>
+          </section>
 
-        <aside className="surface-card rounded-[1.65rem] p-4">
+        <aside className="surface-card surface-card--rail rounded-[1.65rem] p-4">
           <div className="flex h-full flex-col gap-4">
             <div>
-              <p className="section-kicker">Kurulum Kontrolu</p>
+              <p className="section-kicker">Kurulum kontrolü</p>
               <h2 className="mt-2 text-[1.3rem] font-semibold tracking-[-0.04em] text-[var(--text-0)]">
-                {hasMissingRequirements ? "Eksik Ayarlar" : "Kurulum Tamam"}
+                {hasMissingRequirements ? "Eksik ayarlar" : "Kurulum tamam"}
               </h2>
             </div>
 
@@ -200,20 +200,20 @@ export default function AutomationPanel({ session }: Props) {
                 ))}
               </>
             ) : (
-              <div className="surface-subcard rounded-[1.2rem] p-4">
+              <div className="surface-subcard surface-subcard--soft rounded-[1.2rem] p-4">
                 <p className="field-label mb-2">Durum</p>
                 <p className="text-base font-medium text-[var(--text-0)]">
-                  Zorunlu ayarlar hazir.
+                  Zorunlu ayarlar hazır.
                 </p>
                 <p className="mt-2 text-sm leading-6 text-[var(--text-2)]">
-                  Gonderim testine hazir.
+                  Gönderim testine hazır.
                 </p>
               </div>
             )}
 
             {!loading && optionalRecommendations.length > 0 ? (
-              <div className="surface-subcard rounded-[1.2rem] p-4">
-                <p className="field-label mb-2">Onerilen</p>
+              <div className="surface-subcard surface-subcard--soft rounded-[1.2rem] p-4">
+                <p className="field-label mb-2">Önerilen</p>
                 <div className="space-y-2">
                   {optionalRecommendations.map((item) => (
                     <p className="text-sm text-[var(--text-1)]" key={item}>
@@ -228,8 +228,8 @@ export default function AutomationPanel({ session }: Props) {
       </div>
 
       {loading ? (
-        <div className="surface-card rounded-[1.65rem] p-5 text-[var(--text-1)]">
-          Otomasyon verileri yukleniyor...
+        <div className="surface-card surface-card--quiet rounded-[1.65rem] p-5 text-[var(--text-1)]">
+          Otomasyon verileri yükleniyor...
         </div>
       ) : (
         <QueueTable items={items} />

@@ -50,7 +50,7 @@ function truncateText(value: string, maxLength = 150) {
 function buildScopeLabel(campaign: CampaignSummary) {
   return [campaign.city, campaign.district, campaign.neighborhood]
     .filter(Boolean)
-    .join(" / ") || "Tum yetkili iller";
+    .join(" / ") || "Tüm yetkili iller";
 }
 
 async function fetchCampaigns(session: Session) {
@@ -58,7 +58,7 @@ async function fetchCampaigns(session: Session) {
   const json = await res.json();
 
   if (!res.ok || !json.ok) {
-    throw new Error(json.error || "Kampanyalar alinamadi.");
+    throw new Error(json.error || "Kampanyalar alınamadı.");
   }
 
   return (json.items || []) as CampaignSummary[];
@@ -121,7 +121,7 @@ export default function CampaignPanel({ session }: Props) {
           return;
         }
 
-        setErrorText(error instanceof Error ? error.message : "Kampanyalar alinamadi.");
+        setErrorText(error instanceof Error ? error.message : "Kampanyalar alınamadı.");
       } finally {
         if (active) {
           setLoadingCampaigns(false);
@@ -141,7 +141,7 @@ export default function CampaignPanel({ session }: Props) {
   }, [campaigns]);
 
   const stagedCount = draft?.items.length || 0;
-  const stagedScope = draft?.sourceScope || "Secim bekliyor";
+  const stagedScope = draft?.sourceScope || "Seçim bekliyor";
 
   const handleClearDraft = () => {
     clearCampaignDraft(userId);
@@ -152,12 +152,12 @@ export default function CampaignPanel({ session }: Props) {
 
   const handleCreateCampaign = async () => {
     if (!draft || draft.items.length === 0) {
-      setErrorText("Kampanya olusturmak icin once Ilan Bulma ekranindan ilan secmelisin.");
+      setErrorText("Kampanya oluşturmak için önce İlan Bul ekranından ilan seçmelisin.");
       return;
     }
 
     if (!campaignName.trim()) {
-      setErrorText("Kampanya adi zorunludur.");
+      setErrorText("Kampanya adı zorunludur.");
       return;
     }
 
@@ -194,7 +194,7 @@ export default function CampaignPanel({ session }: Props) {
       const json = await res.json();
 
       if (!res.ok || !json.ok) {
-        setErrorText(json.error || "Kampanya olusturulamadi.");
+        setErrorText(json.error || "Kampanya oluşturulamadı.");
         return;
       }
 
@@ -205,10 +205,10 @@ export default function CampaignPanel({ session }: Props) {
       setMessageTemplate("");
       setTestPhoneNumber("");
       setCampaigns(await fetchCampaigns(session));
-      setSuccessText(`${json.queuedCount} kayitla kampanya olusturuldu.`);
+      setSuccessText(`${json.queuedCount} kayıtla kampanya oluşturuldu.`);
     } catch (error) {
       setErrorText(
-        error instanceof Error ? error.message : "Kampanya olusturulamadi."
+        error instanceof Error ? error.message : "Kampanya oluşturulamadı."
       );
     } finally {
       setCreatingCampaign(false);
@@ -217,12 +217,12 @@ export default function CampaignPanel({ session }: Props) {
 
   const handleSendTestMessage = async () => {
     if (!testPhoneNumber.trim()) {
-      setErrorText("Test gonderimi icin once bir telefon numarasi gir.");
+      setErrorText("Test gönderimi için önce bir telefon numarası gir.");
       return;
     }
 
     if (!messageTemplate.trim()) {
-      setErrorText("Test gonderimi icin mesaj metni zorunludur.");
+      setErrorText("Test gönderimi için mesaj metni zorunludur.");
       return;
     }
 
@@ -245,17 +245,17 @@ export default function CampaignPanel({ session }: Props) {
       const json = await res.json();
 
       if (!res.ok || !json.ok) {
-        setErrorText(json.error || "Test mesaji gonderilemedi.");
+        setErrorText(json.error || "Test mesajı gönderilemedi.");
         return;
       }
 
       setTestPhoneNumber(json.phoneNumber || testPhoneNumber);
       setSuccessText(
-        `${json.phoneNumber} numarasina test mesaji ${json.mode === "template" ? "template" : "text"} modunda gonderildi.`
+        `${json.phoneNumber} numarasına test mesajı ${json.mode === "template" ? "şablon" : "serbest metin"} modunda gönderildi.`
       );
     } catch (error) {
       setErrorText(
-        error instanceof Error ? error.message : "Test mesaji gonderilemedi."
+        error instanceof Error ? error.message : "Test mesajı gönderilemedi."
       );
     } finally {
       setSendingTestMessage(false);
@@ -265,13 +265,13 @@ export default function CampaignPanel({ session }: Props) {
   const handleOpenStartConfirmation = (campaign: CampaignSummary) => {
     if (!liveSendUnlocked) {
       setErrorText(
-        "Canli toplu gonderim kilidi kapali. Once guvenlik kilidini ac."
+        "Canlı toplu gönderim kilidi kapalı. Önce güvenlik kilidini aç."
       );
       return;
     }
 
     if (campaign.pending_count === 0) {
-      setErrorText("Bu kampanyada gonderilecek bekleyen kayit yok.");
+      setErrorText("Bu kampanyada gönderilecek bekleyen kayıt yok.");
       return;
     }
 
@@ -316,7 +316,7 @@ export default function CampaignPanel({ session }: Props) {
         const json = await res.json();
 
         if (!res.ok || !json.ok) {
-          setErrorText(json.error || "Kampanya baslatilamadi.");
+          setErrorText(json.error || "Kampanya başlatılamadı.");
           return;
         }
 
@@ -326,12 +326,12 @@ export default function CampaignPanel({ session }: Props) {
 
         if (remainingCount > 0) {
           setSuccessText(
-            `Kampanya gonderimi suruyor. ${totalProcessed} kayit islendi, ${remainingCount} kayit bekliyor.`
+            `Kampanya gönderimi sürüyor. ${totalProcessed} kayıt işlendi, ${remainingCount} kayıt bekliyor.`
           );
           await new Promise((resolve) => window.setTimeout(resolve, 500));
         } else {
           setSuccessText(
-            `Kampanya baslatildi. Toplam ${totalProcessed} kayit WhatsApp sirasina gonderildi.`
+            `Kampanya başlatıldı. Toplam ${totalProcessed} kayıt WhatsApp sırasına gönderildi.`
           );
         }
       } while (remainingCount > 0 && loopCount < 60);
@@ -340,7 +340,7 @@ export default function CampaignPanel({ session }: Props) {
       setConfirmationTarget(null);
       setLiveSendUnlocked(false);
     } catch (error) {
-      setErrorText(error instanceof Error ? error.message : "Kampanya baslatilamadi.");
+      setErrorText(error instanceof Error ? error.message : "Kampanya başlatılamadı.");
     } finally {
       setStartingCampaignId(null);
     }
@@ -377,16 +377,16 @@ export default function CampaignPanel({ session }: Props) {
       {successText && <div className="info-banner info-banner--success">{successText}</div>}
 
       <div className="grid gap-5 xl:grid-cols-[minmax(0,1.2fr)_360px]">
-        <section className="surface-card rounded-[1.65rem] p-4 md:p-5">
+        <section className="surface-card surface-card--section rounded-[1.65rem] p-4 md:p-5">
           <div className="flex flex-col gap-4">
             <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
               <div className="max-w-xl">
                 <p className="section-kicker">Kampanya</p>
                 <h2 className="mt-2 text-[1.5rem] font-semibold tracking-[-0.04em] text-[var(--text-0)]">
-                  Taslaktan gonderime gec
+                  Taslaktan gönderime geç
                 </h2>
                 <p className="mt-2 text-sm leading-6 text-[var(--text-2)]">
-                  Secimi kampanyaya cevir, testi gonder, sonra canliya al.
+                  Seçimi kampanyaya çevir, testi gönder, sonra canlıya al.
                 </p>
               </div>
 
@@ -402,17 +402,17 @@ export default function CampaignPanel({ session }: Props) {
                 </div>
 
                 <div className="compact-stat">
-                  <p className="compact-stat__label">Queue</p>
+                    <p className="compact-stat__label">Sıra</p>
                   <p className="compact-stat__value">{totalQueuedCount}</p>
                 </div>
               </div>
             </div>
 
             <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_320px]">
-              <div className="surface-subcard rounded-[1.35rem] p-4">
+              <div className="surface-subcard surface-subcard--inset rounded-[1.35rem] p-4">
                 <div className="flex items-center justify-between gap-3">
                   <div>
-                    <p className="field-label mb-1">Hazir secim</p>
+                    <p className="field-label mb-1">Hazır seçim</p>
                     <p className="text-sm text-[var(--text-3)]">
                       {stagedScope}
                     </p>
@@ -420,7 +420,7 @@ export default function CampaignPanel({ session }: Props) {
 
                   {draft?.items.length ? (
                     <button onClick={handleClearDraft} className="ghost-btn text-sm">
-                      Secimi Temizle
+                      Seçimi temizle
                     </button>
                   ) : null}
                 </div>
@@ -433,7 +433,7 @@ export default function CampaignPanel({ session }: Props) {
                         className="rounded-[1rem] border border-white/8 bg-black/20 px-3.5 py-3"
                       >
                         <p className="table-cell--strong text-sm font-semibold leading-6">
-                          {item.title || "Baslik bulunamadi"}
+                          {item.title || "Başlık bulunamadı"}
                         </p>
                         <p className="mt-1 text-sm text-[var(--text-2)]">
                           {item.owner_name || "-"} - {[item.city, item.district].filter(Boolean).join(" / ") || "-"}
@@ -443,25 +443,25 @@ export default function CampaignPanel({ session }: Props) {
 
                     {draft.items.length > 6 && (
                       <div className="rounded-[1rem] border border-dashed border-white/10 px-3.5 py-3 text-sm text-[var(--text-2)]">
-                        +{draft.items.length - 6} kayit daha
+                        +{draft.items.length - 6} kayıt daha
                       </div>
                     )}
                   </div>
                 ) : (
                   <div className="empty-state mt-4 rounded-[1rem] border border-dashed border-white/10 bg-black/20">
-                    Hazir secim yok.
+                    Hazır seçim yok.
                   </div>
                 )}
               </div>
 
-              <div className="surface-subcard rounded-[1.35rem] p-4">
+              <div className="surface-subcard surface-subcard--soft rounded-[1.35rem] p-4">
                 <div className="space-y-4">
                   <div>
-                    <label className="field-label">Kampanya adi</label>
+                    <label className="field-label">Kampanya adı</label>
                     <input
                       value={campaignName}
                       onChange={(event) => setCampaignName(event.target.value)}
-                      placeholder="Ornek: Kusadasi ilk temas"
+                      placeholder="Örnek: Kuşadası ilk temas"
                       className="field-input"
                     />
                   </div>
@@ -471,18 +471,18 @@ export default function CampaignPanel({ session }: Props) {
                     <textarea
                       value={messageTemplate}
                       onChange={(event) => setMessageTemplate(event.target.value)}
-                      placeholder="Gonderilecek mesaj"
+                      placeholder="Gönderilecek mesaj"
                       rows={7}
                       className="field-input min-h-[10rem] resize-none"
                     />
                   </div>
 
-                  <div className="surface-subcard rounded-[1.1rem] p-3.5">
-                    <p className="field-label mb-3">Test gonderimi</p>
+                  <div className="surface-subcard surface-subcard--inset rounded-[1.1rem] p-3.5">
+                    <p className="field-label mb-3">Test gönderimi</p>
 
                     <div className="space-y-3">
                       <div>
-                        <label className="field-label">Test numarasi</label>
+                        <label className="field-label">Test numarası</label>
                         <input
                           value={testPhoneNumber}
                           onChange={(event) => setTestPhoneNumber(event.target.value)}
@@ -490,7 +490,7 @@ export default function CampaignPanel({ session }: Props) {
                           className="field-input"
                         />
                         <p className="mt-2 text-xs leading-5 text-[var(--text-3)]">
-                          Sadece kendi test numaran icin kullan.
+                          Sadece kendi test numaran için kullan.
                         </p>
                       </div>
 
@@ -500,8 +500,8 @@ export default function CampaignPanel({ session }: Props) {
                         className="secondary-btn w-full justify-center"
                       >
                         {sendingTestMessage
-                          ? "Test Mesaji Gonderiliyor..."
-                          : "Bu Numaraya Test Mesaji Gonder"}
+                          ? "Test mesajı gönderiliyor..."
+                          : "Bu numaraya test mesajı gönder"}
                       </button>
                     </div>
                   </div>
@@ -511,11 +511,11 @@ export default function CampaignPanel({ session }: Props) {
                     disabled={creatingCampaign || stagedCount === 0}
                     className="primary-btn w-full"
                   >
-                    {creatingCampaign ? "Kampanya Olusuyor..." : "Kampanyayi Olustur"}
+                    {creatingCampaign ? "Kampanya oluşuyor..." : "Kampanyayı oluştur"}
                   </button>
 
-                  <button onClick={() => router.push("/")} className="ghost-btn w-full">
-                    Ilan Bulma Ekranina Don
+                  <button onClick={() => router.push("/workspace")} className="ghost-btn w-full">
+                    İlan bul ekranına dön
                   </button>
                 </div>
               </div>
@@ -523,32 +523,32 @@ export default function CampaignPanel({ session }: Props) {
           </div>
         </section>
 
-        <aside className="surface-card rounded-[1.65rem] p-4">
+        <aside className="surface-card surface-card--rail rounded-[1.65rem] p-4">
           <div className="flex h-full flex-col gap-4">
             <div>
               <p className="section-kicker">Kontrol</p>
               <h2 className="mt-2 text-[1.3rem] font-semibold tracking-[-0.04em] text-[var(--text-0)]">
-                Gonderim akisi
+                Gönderim akışı
               </h2>
             </div>
 
             <div className="compact-stat">
               <p className="compact-stat__label">1</p>
-              <p className="compact-stat__value">Secim al</p>
+              <p className="compact-stat__value">Seçimi hazırla</p>
             </div>
 
             <div className="compact-stat">
               <p className="compact-stat__label">2</p>
-              <p className="compact-stat__value">Test gonder</p>
+              <p className="compact-stat__value">Test gönder</p>
             </div>
 
             <div className="compact-stat">
               <p className="compact-stat__label">3</p>
-              <p className="compact-stat__value">Canliya al</p>
+              <p className="compact-stat__value">Canlıya al</p>
             </div>
 
-            <div className="surface-subcard rounded-[1.2rem] p-4">
-              <p className="field-label mb-3">Canli gonderim kilidi</p>
+            <div className="surface-subcard surface-subcard--soft rounded-[1.2rem] p-4">
+              <p className="field-label mb-3">Canlı gönderim kilidi</p>
               <label className="flex items-start gap-3 text-sm leading-6 text-[var(--text-1)]">
                 <input
                   type="checkbox"
@@ -557,13 +557,13 @@ export default function CampaignPanel({ session }: Props) {
                   className="mt-1 h-4 w-4 rounded border-white/15 bg-black/30 text-[var(--accent)]"
                 />
                 <span>
-                  Kilit acilmadan toplu gonderim baslamaz.
+                  Kilit açılmadan toplu gönderim başlamaz.
                 </span>
               </label>
             </div>
 
-            <Link href="/automation" className="secondary-btn w-full justify-center">
-              Otomatik Mesaj Ekranini Ac
+            <Link href="/workspace/automation" className="secondary-btn w-full justify-center">
+              Otomatik mesaj ekranını aç
             </Link>
           </div>
         </aside>
@@ -574,10 +574,10 @@ export default function CampaignPanel({ session }: Props) {
           <div className="max-w-2xl">
             <p className="section-kicker">Kampanyalar</p>
             <h2 className="mt-2 text-[1.45rem] font-semibold tracking-[-0.04em] text-[var(--text-0)]">
-              Hesabina ait liste
+              Hesabına ait liste
             </h2>
             <p className="mt-2 text-sm leading-6 text-[var(--text-2)]">
-              Baslat, izle veya sil.
+              Başlat, izle veya sil.
             </p>
           </div>
 
@@ -586,7 +586,7 @@ export default function CampaignPanel({ session }: Props) {
               Kampanya <strong className="text-[var(--text-0)]">{campaigns.length}</strong>
             </span>
             <span className="metric-chip">
-              Queue <strong className="text-[var(--text-0)]">{totalQueuedCount}</strong>
+              Sıra <strong className="text-[var(--text-0)]">{totalQueuedCount}</strong>
             </span>
           </div>
         </div>
@@ -599,7 +599,7 @@ export default function CampaignPanel({ session }: Props) {
               <th className="table-head-cell min-w-[220px]">Kapsam</th>
               <th className="table-head-cell min-w-[320px]">Mesaj</th>
               <th className="table-head-cell min-w-[220px]">Durum</th>
-              <th className="table-head-cell min-w-[190px]">Islem</th>
+              <th className="table-head-cell min-w-[190px]">İşlem</th>
               </tr>
             </thead>
 
@@ -650,12 +650,12 @@ export default function CampaignPanel({ session }: Props) {
                         className="secondary-btn px-3.5 py-2 text-sm"
                       >
                         {startingCampaignId === campaign.id
-                          ? "Baslatiliyor..."
+                          ? "Başlatılıyor..."
                           : campaign.pending_count > 0
                             ? liveSendUnlocked
-                              ? "Baslat"
-                              : "Kilit Kapali"
-                            : "Tamamlandi"}
+                              ? "Başlat"
+                              : "Kilit kapalı"
+                            : "Tamamlandı"}
                       </button>
 
                       <button
@@ -673,7 +673,7 @@ export default function CampaignPanel({ session }: Props) {
               {!loadingCampaigns && campaigns.length === 0 && (
                 <tr>
                   <td colSpan={5} className="empty-state">
-                    Henuz bu hesaba ait kampanya yok.
+                    Henüz bu hesaba ait kampanya yok.
                   </td>
                 </tr>
               )}
@@ -681,7 +681,7 @@ export default function CampaignPanel({ session }: Props) {
               {loadingCampaigns && (
                 <tr>
                   <td colSpan={5} className="empty-state">
-                    Kampanya listesi yukleniyor...
+                    Kampanya listesi yükleniyor...
                   </td>
                 </tr>
               )}
@@ -692,14 +692,14 @@ export default function CampaignPanel({ session }: Props) {
 
       {confirmationTarget ? (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4 backdrop-blur-sm">
-          <div className="surface-card w-full max-w-xl rounded-[1.6rem] p-5 shadow-[0_30px_80px_rgba(0,0,0,0.45)]">
-            <p className="section-kicker">Canli Gonderim Onayi</p>
+          <div className="surface-card surface-card--section w-full max-w-xl rounded-[1.6rem] p-5 shadow-[0_30px_80px_rgba(0,0,0,0.45)]">
+            <p className="section-kicker">Canlı gönderim onayı</p>
             <h3 className="mt-2 text-[1.4rem] font-semibold tracking-[-0.04em] text-[var(--text-0)]">
-              Bu kampanya gercek numaralara mesaj gonderecek
+              Bu kampanya gerçek numaralara mesaj gönderecek
             </h3>
             <p className="mt-3 text-sm leading-7 text-[var(--text-1)]">
-              Devam edersen bekleyen queue kayitlari WhatsApp Cloud API uzerinden
-              ilan sahiplerine gonderilmeye baslayacak.
+              Devam edersen bekleyen kayıtlar WhatsApp üzerinden ilan sahiplerine
+              gönderilmeye başlayacak.
             </p>
 
             <div className="mt-5 grid gap-3 sm:grid-cols-3">
@@ -717,17 +717,17 @@ export default function CampaignPanel({ session }: Props) {
               </div>
             </div>
 
-            <div className="surface-subcard mt-4 rounded-[1.2rem] p-4">
+            <div className="surface-subcard surface-subcard--soft mt-4 rounded-[1.2rem] p-4">
               <p className="field-label mb-2">Son kontrol</p>
               <p className="text-sm leading-7 text-[var(--text-1)]">
-                Eger sadece deneme yapmak istiyorsan bu pencereyi kapat ve sol taraftaki
-                test gonderimi alanini kullan. Bu buton toplu canli gonderim icindir.
+                Eğer yalnızca deneme yapmak istiyorsan bu pencereyi kapat ve test
+                gönderimi alanını kullan. Bu buton toplu canlı gönderim içindir.
               </p>
             </div>
 
             <div className="mt-5 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
               <button onClick={handleCloseStartConfirmation} className="ghost-btn sm:min-w-[140px]">
-                Vazgec
+                Vazgeç
               </button>
               <button
                 onClick={() => void handleStartCampaign(confirmationTarget.id)}
@@ -735,8 +735,8 @@ export default function CampaignPanel({ session }: Props) {
                 className="primary-btn sm:min-w-[210px]"
               >
                 {startingCampaignId === confirmationTarget.id
-                  ? "Gonderim Baslatiliyor..."
-                  : "Evet, Canli Gonderimi Baslat"}
+                  ? "Gönderim başlatılıyor..."
+                  : "Evet, canlı gönderimi başlat"}
               </button>
             </div>
           </div>

@@ -59,12 +59,12 @@ export default function ProfileForm({ mode }: Props) {
 
   const handleSubmit = async () => {
     if (!user) {
-      setErrorText("Oturum bulunamadi. Lutfen yeniden giris yap.");
+      setErrorText("Oturum bulunamadı. Lütfen yeniden giriş yap.");
       return;
     }
 
     if (!firstName.trim()) {
-      setErrorText("Isim zorunludur.");
+      setErrorText("İsim zorunludur.");
       return;
     }
 
@@ -74,7 +74,7 @@ export default function ProfileForm({ mode }: Props) {
     }
 
     if (selectedCities.length === 0) {
-      setErrorText("En az 1 il secmelisin.");
+      setErrorText("En az 1 il seçmelisin.");
       return;
     }
 
@@ -136,35 +136,35 @@ export default function ProfileForm({ mode }: Props) {
       await refreshProfile();
 
       if (mode === "onboarding") {
-        router.replace("/");
+        router.replace("/workspace");
         return;
       }
 
-      setSuccessText("Profil bilgileri guncellendi.");
+      setSuccessText("Profil bilgileri güncellendi.");
     } finally {
       setSaving(false);
     }
   };
 
   return (
-    <div className="surface-card rounded-[1.9rem] p-5 md:p-6">
+    <div className="surface-card surface-card--section rounded-[1.9rem] p-5 md:p-6">
       <div className="flex flex-col gap-5 xl:flex-row xl:items-start xl:justify-between">
         <div>
           <p className="section-kicker">
-            {mode === "onboarding" ? "Zorunlu Kurulum" : "Profil Yonetimi"}
+            {mode === "onboarding" ? "Zorunlu kurulum" : "Profil yönetimi"}
           </p>
           <h2 className="mt-2 text-[1.65rem] font-semibold tracking-[-0.04em] text-[var(--text-0)]">
-            {mode === "onboarding" ? "Profil bilgilerini tamamla" : "Profili duzenle"}
+            {mode === "onboarding" ? "Profil bilgilerini tamamla" : "Profili düzenle"}
           </h2>
           <p className="mt-2 max-w-2xl text-sm leading-6 text-[var(--text-2)]">
             {mode === "onboarding"
-              ? "Panele gecmek icin temel alanlari tamamla."
-              : "Hesap ve bolge ayarlarini guncelle."}
+              ? "Panele geçmek için temel alanları tamamla."
+              : "Hesap ve bölge ayarlarını güncelle."}
           </p>
         </div>
 
         <div className="metric-chip">
-          Il sayisi <strong className="text-[var(--text-0)]">{selectedCities.length}</strong>
+          İl sayısı <strong className="text-[var(--text-0)]">{selectedCities.length}</strong>
         </div>
       </div>
 
@@ -177,14 +177,14 @@ export default function ProfileForm({ mode }: Props) {
       )}
 
       <div className="mt-6 grid gap-5 xl:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)]">
-        <section className="surface-subcard rounded-[1.45rem] p-5">
+        <section className="surface-subcard surface-subcard--inset rounded-[1.45rem] p-5">
           <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-1">
             <div>
-              <label className="field-label">Isim</label>
+              <label className="field-label">İsim</label>
               <input
                 value={firstName}
                 onChange={(event) => setFirstName(event.target.value)}
-                placeholder="Ornek: Ahmet"
+                placeholder="Örnek: Ahmet"
                 className="field-input"
               />
             </div>
@@ -194,7 +194,7 @@ export default function ProfileForm({ mode }: Props) {
               <input
                 value={lastName}
                 onChange={(event) => setLastName(event.target.value)}
-                placeholder="Ornek: Yilmaz"
+                placeholder="Örnek: Yılmaz"
                 className="field-input"
               />
             </div>
@@ -215,7 +215,7 @@ export default function ProfileForm({ mode }: Props) {
           </div>
         </section>
 
-        <section className="surface-subcard rounded-[1.45rem] p-5">
+        <section className="surface-subcard surface-subcard--soft rounded-[1.45rem] p-5">
           <div className="flex flex-col gap-4 md:flex-row md:items-end">
             <div className="flex-1">
               <label className="field-label">Yetkili il ekle</label>
@@ -225,7 +225,7 @@ export default function ProfileForm({ mode }: Props) {
                 className="field-input"
               >
                 {availableCities.length === 0 ? (
-                  <option value="">Tum iller eklendi</option>
+                    <option value="">Tüm iller eklendi</option>
                 ) : (
                   availableCities.map((city) => (
                     <option key={city} value={city}>
@@ -241,23 +241,23 @@ export default function ProfileForm({ mode }: Props) {
               disabled={!cityToAdd || availableCities.length === 0}
               className="secondary-btn md:min-w-[168px]"
             >
-              Bolge Ekle
+              Bölge ekle
             </button>
           </div>
 
           <div className="mt-6">
             <div className="mb-3 flex items-center justify-between gap-3">
-              <p className="field-label mb-0">Secili iller</p>
+              <p className="field-label mb-0">Seçili iller</p>
               <span className="text-sm text-[var(--text-2)]">
                 {selectedCities.length === 0
-                  ? "Secim yok"
+                  ? "Seçim yok"
                   : `${selectedCities.length} il aktif`}
               </span>
             </div>
 
             {selectedCities.length === 0 ? (
               <div className="empty-state rounded-[1.35rem] border border-dashed border-white/10 bg-black/20">
-                Henuz il secilmedi.
+                Henüz il seçilmedi.
               </div>
             ) : (
               <div className="thin-scroll flex max-h-[16rem] flex-wrap gap-2 overflow-auto pr-1">
@@ -287,16 +287,16 @@ export default function ProfileForm({ mode }: Props) {
           {saving
             ? "Kaydediliyor..."
             : mode === "onboarding"
-              ? "Onayla ve Panele Gec"
-              : "Profili Kaydet"}
+              ? "Onayla ve panele geç"
+              : "Profili kaydet"}
         </button>
 
         {mode === "profile" && (
           <button
-            onClick={() => router.push("/")}
+            onClick={() => router.push("/workspace")}
             className="ghost-btn"
           >
-            Panele Don
+            Panele dön
           </button>
         )}
       </div>

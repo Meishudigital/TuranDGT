@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
 
 export default function QueueLegacyPage() {
-  redirect("/campaigns");
+  redirect("/workspace/campaigns");
 }

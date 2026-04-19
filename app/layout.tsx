@@ -3,8 +3,9 @@ import { AuthProvider } from "@/components/AuthProvider";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Emlak Otomasyon V1",
-  description: "Supabase tabanli emlak filtreleme ve kampanya yonetimi",
+  title: "Turan DGT | Emlak İletişim ve Kampanya Sistemi",
+  description:
+    "Başvuru ile erişilen, bölgeye özel çalışan emlak iletişim ve kampanya yönetim sistemi.",
 };
 
 export default function RootLayout({

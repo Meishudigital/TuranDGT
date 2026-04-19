@@ -66,7 +66,7 @@ export default function RecentListingsPanel({ session }: Props) {
         const json = await res.json();
 
         if (!res.ok || !json.ok) {
-          throw new Error(json.error || "Yeni ilanlar alinamadi.");
+          throw new Error(json.error || "Yeni ilanlar alınamadı.");
         }
 
         if (!active) {
@@ -79,7 +79,7 @@ export default function RecentListingsPanel({ session }: Props) {
           return;
         }
 
-        setErrorText(error instanceof Error ? error.message : "Yeni ilanlar alinamadi.");
+        setErrorText(error instanceof Error ? error.message : "Yeni ilanlar alınamadı.");
       } finally {
         if (active) {
           setLoading(false);
@@ -102,32 +102,32 @@ export default function RecentListingsPanel({ session }: Props) {
     <div className="space-y-5">
       {errorText && <div className="info-banner info-banner--error">{errorText}</div>}
 
-      <section className="surface-card rounded-[1.65rem] p-4 md:p-5">
+      <section className="surface-card surface-card--section rounded-[1.65rem] p-4 md:p-5">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
           <div className="max-w-xl">
-            <p className="section-kicker">Yeni Ilanlar</p>
+            <p className="section-kicker">Yeni ilanlar</p>
             <h2 className="mt-2 text-[1.55rem] font-semibold tracking-[-0.04em] text-[var(--text-0)]">
-              Son eklenenler
+              Son eklenen kayıtlar
             </h2>
             <p className="mt-2 text-sm leading-6 text-[var(--text-2)]">
-              Yetkili alanlar icindeki son kayitlar.
+              Yetkili bölgelerindeki en yeni kayıtlar.
             </p>
           </div>
 
           <div className="grid gap-2 sm:grid-cols-3 lg:min-w-[29rem]">
             <div className="compact-stat">
-              <p className="compact-stat__label">Toplam kayit</p>
+              <p className="compact-stat__label">Toplam kayıt</p>
               <p className="compact-stat__value">{items.length}</p>
             </div>
 
             <div className="compact-stat">
-              <p className="compact-stat__label">Il sayisi</p>
+              <p className="compact-stat__label">İl sayısı</p>
               <p className="compact-stat__value">{cityCount}</p>
             </div>
 
             <div className="compact-stat">
               <p className="compact-stat__label">Durum</p>
-              <p className="compact-stat__value">{loading ? "Yukleniyor" : "Hazir"}</p>
+              <p className="compact-stat__value">{loading ? "Yükleniyor" : "Hazır"}</p>
             </div>
           </div>
         </div>
@@ -141,7 +141,7 @@ export default function RecentListingsPanel({ session }: Props) {
               Son 100 ilan
             </h2>
             <p className="mt-2 text-sm leading-6 text-[var(--text-2)]">
-              En yeni kayitlar ustte.
+              En yeni kayıtlar üstte listelenir.
             </p>
           </div>
         </div>
@@ -150,8 +150,8 @@ export default function RecentListingsPanel({ session }: Props) {
           <table className="min-w-full text-sm">
             <thead className="bg-black/20 text-left">
               <tr>
-                <th className="table-head-cell min-w-[300px]">Ilan</th>
-                <th className="table-head-cell min-w-[180px]">Kisi</th>
+                <th className="table-head-cell min-w-[300px]">İlan</th>
+                <th className="table-head-cell min-w-[180px]">Kişi</th>
                 <th className="table-head-cell min-w-[220px]">Konum</th>
                 <th className="table-head-cell min-w-[140px]">Fiyat</th>
                 <th className="table-head-cell min-w-[180px]">Eklenme</th>
@@ -165,7 +165,7 @@ export default function RecentListingsPanel({ session }: Props) {
                   <td className="table-cell">
                     <div className="space-y-2">
                       <p className="table-title text-[0.98rem] font-semibold">
-                        {item.title || "Baslik bulunamadi"}
+                        {item.title || "Başlık bulunamadı"}
                       </p>
                       <span className="table-meta-pill">{item.platform || "Platform yok"}</span>
                     </div>
@@ -206,7 +206,7 @@ export default function RecentListingsPanel({ session }: Props) {
                         rel="noreferrer"
                         className="secondary-btn px-3.5 py-2 text-sm"
                       >
-                        Ilani Ac
+                        İlanı aç
                       </a>
                     ) : (
                       <span className="table-cell--muted">-</span>
@@ -218,7 +218,7 @@ export default function RecentListingsPanel({ session }: Props) {
               {!loading && items.length === 0 && (
                 <tr>
                   <td colSpan={6} className="empty-state">
-                    Gosterilecek yeni ilan bulunamadi.
+                    Gösterilecek yeni ilan bulunamadı.
                   </td>
                 </tr>
               )}
@@ -226,7 +226,7 @@ export default function RecentListingsPanel({ session }: Props) {
               {loading && (
                 <tr>
                   <td colSpan={6} className="empty-state">
-                    Yeni ilanlar yukleniyor...
+                    Yeni ilanlar yükleniyor...
                   </td>
                 </tr>
               )}

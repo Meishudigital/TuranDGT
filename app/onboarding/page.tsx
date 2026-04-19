@@ -20,7 +20,7 @@ export default function OnboardingPage() {
     }
 
     if (profile?.onboarding_completed && regions.length > 0) {
-      router.replace("/");
+      router.replace("/workspace");
     }
   }, [isLoading, profile?.onboarding_completed, regions.length, router, session]);
 

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
@@ -19,15 +20,25 @@ type NavItem = {
 };
 
 const primaryNavItems: NavItem[] = [
-  { href: "/", label: "Ilan Bulma", note: "Arama ve secim", badge: "IB" },
-  { href: "/campaigns", label: "Kampanyalar", note: "Taslak ve gonderim", badge: "KP" },
-  { href: "/automation", label: "Otomatik Mesaj", note: "WhatsApp durumu", badge: "OM" },
-  { href: "/new-listings", label: "Yeni Ilanlar", note: "Son eklenenler", badge: "YI" },
-  { href: "/support", label: "Destek", note: "Yardim merkezi", badge: "DS" },
+  { href: "/workspace", label: "İlan Bul", note: "Arama ve seçim", badge: "İB" },
+  {
+    href: "/workspace/campaigns",
+    label: "Kampanyalar",
+    note: "Taslak ve gönderim",
+    badge: "KP",
+  },
+  {
+    href: "/workspace/automation",
+    label: "Otomatik Mesaj",
+    note: "Mesaj durumu",
+    badge: "OM",
+  },
+  { href: "/workspace/new-listings", label: "Yeni İlanlar", note: "Son kayıtlar", badge: "Yİ" },
+  { href: "/workspace/support", label: "Bize Ulaşın", note: "Yardım ve bilgi", badge: "DS" },
 ];
 
 const secondaryNavItems: NavItem[] = [
-  { href: "/profile", label: "Profil", note: "Hesap ve bolgeler", badge: "PR" },
+  { href: "/workspace/profile", label: "Profil", note: "Hesap ve bölgeler", badge: "PR" },
 ];
 
 function getInitials(firstName: string | null | undefined, lastName: string | null | undefined) {
@@ -45,8 +56,8 @@ function getInitials(firstName: string | null | undefined, lastName: string | nu
 }
 
 function isActivePath(pathname: string, href: string) {
-  if (href === "/") {
-    return pathname === "/";
+  if (href === "/workspace") {
+    return pathname === "/workspace";
   }
 
   return pathname === href || pathname.startsWith(`${href}/`);
@@ -118,7 +129,7 @@ export default function AppShell({ title, description, children }: Props) {
     <main className="workspace-shell">
       {mobileMenuOpen ? (
         <button
-          aria-label="Menuyu kapat"
+          aria-label="Menüyü kapat"
           className="fixed inset-0 z-30 bg-black/60 backdrop-blur-sm lg:hidden"
           onClick={() => setMobileMenuOpen(false)}
         />
@@ -131,13 +142,22 @@ export default function AppShell({ title, description, children }: Props) {
           }`}
         >
           <div className="flex items-center justify-between gap-3">
-            <div className="flex min-w-0 items-center gap-3">
-              <span className="brand-badge">TD</span>
+            <div className="sidebar-brand">
+              <span className="brand-mark">
+                <Image
+                  src="/logo.png"
+                  alt="Turan DGT logosu"
+                  fill
+                  sizes="46px"
+                  className="brand-mark__image"
+                  priority
+                />
+              </span>
 
               {!sidebarCollapsed ? (
                 <div className="min-w-0">
-                  <p className="toolbar-title truncate">Turan Digital</p>
-                  <p className="toolbar-subtitle truncate">Real estate workspace</p>
+                  <p className="toolbar-title truncate">Turan DGT</p>
+                  <p className="toolbar-subtitle truncate">Emlak çalışma alanı</p>
                 </div>
               ) : null}
             </div>
@@ -145,7 +165,7 @@ export default function AppShell({ title, description, children }: Props) {
             <button
               onClick={() => setSidebarCollapsed((value) => !value)}
               className="ghost-btn hidden h-10 w-10 items-center justify-center p-0 lg:inline-flex"
-              aria-label={sidebarCollapsed ? "Menuyu genislet" : "Menuyu daralt"}
+              aria-label={sidebarCollapsed ? "Menüyü genişlet" : "Menüyü daralt"}
             >
               {sidebarCollapsed ? ">" : "<"}
             </button>
@@ -192,7 +212,7 @@ export default function AppShell({ title, description, children }: Props) {
               {!sidebarCollapsed ? (
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-sm font-semibold text-[var(--text-0)]">
-                    {fullName || "Musteri hesabi"}
+                    {fullName || "Müşteri hesabı"}
                   </p>
                   <p className="truncate text-xs text-[var(--text-3)]">
                     {user?.email || "Hesap aktif"}
@@ -206,13 +226,13 @@ export default function AppShell({ title, description, children }: Props) {
               disabled={signingOut}
               className={`secondary-btn mt-3 w-full justify-center ${sidebarCollapsed ? "px-0" : ""}`}
             >
-              {signingOut ? "..." : sidebarCollapsed ? "CIK" : "Cikis Yap"}
+              {signingOut ? "..." : sidebarCollapsed ? "Çık" : "Çıkış Yap"}
             </button>
           </div>
         </aside>
 
         <div className="flex min-w-0 flex-1 flex-col gap-4">
-          <header className="surface-card page-rise rounded-[1.4rem] px-4 py-4 md:px-5 md:py-4">
+          <header className="surface-card surface-card--header page-rise rounded-[1.4rem] px-4 py-4 md:px-5 md:py-4">
             <div className="workspace-header">
               <div className="flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
                 <div className="min-w-0">
@@ -220,13 +240,13 @@ export default function AppShell({ title, description, children }: Props) {
                     <button
                       onClick={() => setMobileMenuOpen(true)}
                       className="ghost-btn inline-flex h-10 w-10 items-center justify-center p-0 lg:hidden"
-                      aria-label="Menuyu ac"
+                      aria-label="Menüyü aç"
                     >
                       =
                     </button>
 
                     <div className="min-w-0">
-                      <p className="section-kicker">Workspace</p>
+                      <p className="section-kicker">Çalışma alanı</p>
                       <h1 className="mt-2 text-[clamp(1.45rem,1.28rem+0.7vw,2rem)] font-semibold tracking-[-0.045em] text-[var(--text-0)]">
                         {title}
                       </h1>
@@ -239,12 +259,12 @@ export default function AppShell({ title, description, children }: Props) {
 
                 <div className="flex flex-wrap gap-2 xl:justify-end">
                   <span className="metric-chip">
-                    Il <strong className="text-[var(--text-0)]">{regions.length}</strong>
+                    İl <strong className="text-[var(--text-0)]">{regions.length}</strong>
                   </span>
                   <span className="metric-chip">
                     Hesap{" "}
                     <strong className="text-[var(--text-0)]">
-                      {fullName || "Hazir"}
+                      {fullName || "Hazır"}
                     </strong>
                   </span>
                   <span className="metric-chip">
@@ -270,7 +290,7 @@ export default function AppShell({ title, description, children }: Props) {
                       ) : null}
                     </>
                   ) : (
-                    <span className="city-chip city-chip--muted">Bolge bekleniyor</span>
+                    <span className="city-chip city-chip--muted">Bölge bekleniyor</span>
                   )}
                 </div>
               </div>

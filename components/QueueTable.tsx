@@ -52,7 +52,7 @@ function formatStatus(status: string) {
     case "pending":
       return "Bekliyor";
     case "sent":
-      return "Gonderildi";
+      return "Gönderildi";
     case "failed":
       return "Hata";
     default:
@@ -88,12 +88,12 @@ export default function QueueTable({ items }: Props) {
     <div className="table-shell">
       <div className="table-top">
         <div className="max-w-2xl">
-          <p className="section-kicker">Queue</p>
+          <p className="section-kicker">Mesaj sırası</p>
           <h2 className="mt-2 text-[1.45rem] font-semibold tracking-[-0.04em] text-[var(--text-0)]">
-            Gonderim kayitlari
+            Gönderim kayıtları
           </h2>
           <p className="mt-2 text-sm leading-6 text-[var(--text-2)]">
-            Bekleyen, giden ve hatali kayitlar.
+            Bekleyen, giden ve hatalı kayıtlar.
           </p>
         </div>
 
@@ -105,7 +105,7 @@ export default function QueueTable({ items }: Props) {
             Bekleyen <strong className="text-[var(--text-0)]">{summary.pending}</strong>
           </span>
           <span className="metric-chip">
-            Gonderildi <strong className="text-[var(--text-0)]">{summary.sent}</strong>
+            Gönderildi <strong className="text-[var(--text-0)]">{summary.sent}</strong>
           </span>
           <span className="metric-chip">
             Hata <strong className="text-[var(--text-0)]">{summary.failed}</strong>
@@ -117,7 +117,7 @@ export default function QueueTable({ items }: Props) {
         <table className="min-w-full text-sm">
           <thead className="bg-black/20 text-left">
             <tr>
-              <th className="table-head-cell min-w-[96px]">Queue</th>
+              <th className="table-head-cell min-w-[96px]">Sıra</th>
               <th className="table-head-cell min-w-[220px]">Kampanya</th>
               <th className="table-head-cell min-w-[320px]">Mesaj</th>
               <th className="table-head-cell min-w-[150px]">Durum</th>
@@ -140,7 +140,7 @@ export default function QueueTable({ items }: Props) {
                   <td className="table-cell">
                     <div className="space-y-1">
                       <p className="table-cell--strong">#{item.id}</p>
-                      <p className="table-cell--muted text-sm">Kayit</p>
+                      <p className="table-cell--muted text-sm">Kayıt</p>
                     </div>
                   </td>
 
@@ -170,7 +170,7 @@ export default function QueueTable({ items }: Props) {
                       {formatStatus(item.status)}
                     </span>
                     <p className="table-cell--muted mt-2 text-sm">
-                      Olusturuldu: {formatDate(item.created_at)}
+                      Oluşturuldu: {formatDate(item.created_at)}
                     </p>
                     {item.provider_status ? (
                       <p className="table-cell--muted mt-1 text-xs uppercase tracking-[0.12em]">
@@ -183,7 +183,7 @@ export default function QueueTable({ items }: Props) {
                     <div className="space-y-1">
                       <p className="table-cell--strong">{formatDate(item.sent_at)}</p>
                       <p className="table-cell--muted text-sm">
-                        Son guncelleme: {formatDate(item.updated_at)}
+                        Son güncelleme: {formatDate(item.updated_at)}
                       </p>
                     </div>
                   </td>
@@ -202,7 +202,7 @@ export default function QueueTable({ items }: Props) {
             {items.length === 0 && (
               <tr>
                 <td colSpan={6} className="empty-state">
-                  Henuz queue kaydi yok. Yeni kampanyalar burada listelenecek.
+                  Henüz sıra kaydı yok. Yeni kampanyalar burada listelenecek.
                 </td>
               </tr>
             )}
